@@ -10,8 +10,6 @@ import org.json.JSONException;
 
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
-    //private String[] mDataset;
-
     private JSONArray mDataset;
 
     private ListClickListener listClickListener;
@@ -35,13 +33,8 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         return new ViewHolder(view);
     }
 
-//    public LanguageAdapter(String[] myDataset) {
-//        mDataset = myDataset;
-//    }
-
     @Override
     public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
-        //viewHolder.mTextView.setText(mDataset[i]);
         try {
             viewHolder.mTextView.setText(mDataset.getString(i));
         } catch (JSONException e) {
