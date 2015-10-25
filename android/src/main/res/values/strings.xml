@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Programming</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_language">@string/app_name</string>
+    <string name="title_activity_programs">@string/app_name</string>
+    <string name="title_activity_detail">@string/app_name</string>
+</resources>
