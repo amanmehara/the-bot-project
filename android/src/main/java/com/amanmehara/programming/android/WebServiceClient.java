@@ -25,20 +25,11 @@ public class WebServiceClient extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        //ConnectivityManager connectivityManager = (ConnectivityManager) Context.
-
         String responseEntity = null;
         InputStream inputStream;
         try {
             URL url = new URL(params[0]);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-
-//            int responseCode = httpURLConnection.getResponseCode();
-//            if (responseCode!=200) {
-//                return "Host Unreachable";
-//            }
-            //inputStream=new BufferedInputStream(httpURLConnection.getInputStream());
 
             inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
             bufferedReader = new BufferedReader(inputStreamReader);
