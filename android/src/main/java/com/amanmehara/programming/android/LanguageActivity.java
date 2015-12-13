@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -34,35 +33,35 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
         setContentView(R.layout.activity_language);
 
 
-            String jsonLanguage = null;
-            WebServiceClient webServiceClient = new WebServiceClient();
+        String jsonLanguage = null;
+        WebServiceClient webServiceClient = new WebServiceClient();
         try {
-                jsonLanguage = webServiceClient
-                        .execute("http://programmingwebapp.azurewebsites.net/api/languages")
-                        .get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            jsonLanguage = webServiceClient
+                    .execute("http://programmingwebapp.azurewebsites.net/api/languages")
+                    .get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-            languages = null;
+        languages = null;
 
-            try {
-                languages = new JSONArray(jsonLanguage);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            languages = new JSONArray(jsonLanguage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-            languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
-            languageRecyclerView.setHasFixedSize(true);
+        languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
+        languageRecyclerView.setHasFixedSize(true);
 
-            languageLayoutManager = new LinearLayoutManager(this);
-            languageRecyclerView.setLayoutManager(languageLayoutManager);
+        languageLayoutManager = new LinearLayoutManager(this);
+        languageRecyclerView.setLayoutManager(languageLayoutManager);
 
-            languageAdapter = new LanguageAdapter(languages);
-            ((LanguageAdapter) languageAdapter).setListClickListener(this);
+        languageAdapter = new LanguageAdapter(languages);
+        ((LanguageAdapter) languageAdapter).setListClickListener(this);
 
-            //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
-            languageRecyclerView.setAdapter(languageAdapter);
+        //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
+        languageRecyclerView.setAdapter(languageAdapter);
     }
 
 
@@ -109,7 +108,16 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
 
             startActivity(intent);
         } else {
-            Toast.makeText(context, "No Internet, No Programs!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(LanguageActivity.this, NoConnectionActivity.class);
+            intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
+
+            try {
+                intent.putExtra("language", languages.getString(position));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            startActivity(intent);
         }
 
 

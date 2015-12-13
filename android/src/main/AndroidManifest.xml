@@ -21,7 +21,7 @@
         </activity>
         <activity
                 android:name=".LanguageActivity"
-                android:label="@string/title_activity_language"
+                android:label="@string/app_name"
                 android:parentActivityName=".MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
@@ -29,15 +29,15 @@
         </activity>
         <activity
                 android:name=".ProgramsActivity"
-                android:label="@string/title_activity_programs">
+                android:label="@string/app_name">
         </activity>
         <activity
                 android:name=".DetailActivity"
-                android:label="@string/title_activity_detail">
+                android:label="@string/app_name">
         </activity>
         <activity
                 android:name=".NoConnectionActivity"
-                android:label="@string/title_activity_no_connection">
+                android:label="@string/app_name">
         </activity>
     </application>
 

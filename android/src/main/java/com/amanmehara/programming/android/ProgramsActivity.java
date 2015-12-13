@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,7 +103,9 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
                 Intent intent = new Intent(this, LanguageActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(context, "No Internet, No Languages!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, NoConnectionActivity.class);
+                intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
+                startActivity(intent);
             }
 
         }
@@ -124,7 +125,6 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         startActivity(intent);
     }
