@@ -25,6 +25,7 @@ public class WebServiceClient extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
 
+        //Comtext context = this.get
         //ConnectivityManager connectivityManager = (ConnectivityManager) Context.
 
         String responseEntity = null;
