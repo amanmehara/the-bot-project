@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 public class ProgramsActivity extends Activity implements ProgramsAdapter.ListClickListener {
 
     private Context context;
-
     private Bundle bundle;
 
     private RecyclerView programsRecyclerView;
@@ -36,58 +35,41 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
 
-        context = this.getApplicationContext();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetworkInfo != null &&
-                activeNetworkInfo.isConnectedOrConnecting();
+        bundle = getIntent().getExtras();
+        String language = bundle.getString("language");
 
-        if (isConnected == true) {
-            bundle = getIntent().getExtras();
-            String language = bundle.getString("language");
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
-            String jsonPrograms = null;
-            WebServiceClient webServiceClient = new WebServiceClient();
+        String jsonPrograms = null;
+        WebServiceClient webServiceClient = new WebServiceClient();
 
-            try {
-                jsonPrograms = webServiceClient
-                        .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/" + language)
-                        .get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            programs = null;
-
-            try {
-                programs = new JSONArray(jsonPrograms);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
-            programsRecyclerView.setHasFixedSize(true);
-
-            programsLayoutManager = new LinearLayoutManager(this);
-            programsRecyclerView.setLayoutManager(programsLayoutManager);
-
-            programsAdapter = new ProgramsAdapter(programs);
-            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
-
-            programsRecyclerView.setAdapter(programsAdapter);
-        } else {
-            Toast.makeText(context, "No Internet, No Programs!", Toast.LENGTH_LONG).show();
-
-            programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
-            programsRecyclerView.setHasFixedSize(true);
-
-            programsLayoutManager = new LinearLayoutManager(this);
-            programsRecyclerView.setLayoutManager(programsLayoutManager);
-
-            programsAdapter = new ProgramsAdapter(new JSONArray());
-            programsRecyclerView.setAdapter(programsAdapter);
+        try {
+            jsonPrograms = webServiceClient
+                    .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/" + language)
+                    .get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
+
+        programs = null;
+
+        try {
+            programs = new JSONArray(jsonPrograms);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
+        programsRecyclerView.setHasFixedSize(true);
+
+        programsLayoutManager = new LinearLayoutManager(this);
+        programsRecyclerView.setLayoutManager(programsLayoutManager);
+
+        programsAdapter = new ProgramsAdapter(programs);
+        ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+
+        programsRecyclerView.setAdapter(programsAdapter);
+
     }
 
     @Override
@@ -107,6 +89,24 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == android.R.id.home) {
+
+            context = this.getApplicationContext();
+            ConnectivityManager connectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = activeNetworkInfo != null &&
+                    activeNetworkInfo.isConnectedOrConnecting();
+
+            if (isConnected) {
+                Intent intent = new Intent(this, LanguageActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(context, "No Internet, No Languages!", Toast.LENGTH_LONG).show();
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

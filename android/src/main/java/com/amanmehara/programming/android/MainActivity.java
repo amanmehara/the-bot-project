@@ -1,14 +1,20 @@
 package com.amanmehara.programming.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +46,20 @@ public class MainActivity extends Activity {
     }
 
     public void getStarted(View view) {
-        Intent intent = new Intent(this, LanguageActivity.class);
-        startActivity(intent);
+
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            Intent intent = new Intent(this, LanguageActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(context, "No Internet, No Languages!", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

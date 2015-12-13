@@ -33,17 +33,10 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
 
-        context = this.getApplicationContext();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetworkInfo != null &&
-                activeNetworkInfo.isConnectedOrConnecting();
 
-        if (isConnected == true) {
             String jsonLanguage = null;
             WebServiceClient webServiceClient = new WebServiceClient();
-            try {
+        try {
                 jsonLanguage = webServiceClient
                         .execute("http://programmingwebapp.azurewebsites.net/api/languages")
                         .get();
@@ -59,7 +52,6 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
                 e.printStackTrace();
             }
 
-
             languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
             languageRecyclerView.setHasFixedSize(true);
 
@@ -71,20 +63,6 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
 
             //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
             languageRecyclerView.setAdapter(languageAdapter);
-        } else {
-            Toast.makeText(context, "No Internet, No Languages!", Toast.LENGTH_LONG).show();
-
-            languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
-            languageRecyclerView.setHasFixedSize(true);
-
-            languageLayoutManager = new LinearLayoutManager(this);
-            languageRecyclerView.setLayoutManager(languageLayoutManager);
-
-            languageAdapter = new LanguageAdapter(new JSONArray());
-            languageRecyclerView.setAdapter(languageAdapter);
-        }
-
-
     }
 
 
@@ -112,15 +90,28 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
 
     @Override
     public void listItemClicked(View view, int position) {
-        Intent intent = new Intent(LanguageActivity.this, ProgramsActivity.class);
 
-        try {
-            intent.putExtra("language", languages.getString(position));
-        } catch (JSONException e) {
-            e.printStackTrace();
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            Intent intent = new Intent(LanguageActivity.this, ProgramsActivity.class);
+
+            try {
+                intent.putExtra("language", languages.getString(position));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            startActivity(intent);
+        } else {
+            Toast.makeText(context, "No Internet, No Programs!", Toast.LENGTH_LONG).show();
         }
 
-        startActivity(intent);
 
     }
 }

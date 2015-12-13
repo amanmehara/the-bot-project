@@ -6,4 +6,5 @@
     <string name="title_activity_language">@string/app_name</string>
     <string name="title_activity_programs">@string/app_name</string>
     <string name="title_activity_detail">@string/app_name</string>
+    <string name="title_activity_no_connection">NoConnectionActivity</string>
 </resources>
