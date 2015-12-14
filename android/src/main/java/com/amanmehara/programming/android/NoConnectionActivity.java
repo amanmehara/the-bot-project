@@ -1,17 +1,29 @@
 package com.amanmehara.programming.android;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class NoConnectionActivity extends Activity {
+
+    private Context context;
+    private Bundle bundle;
+    private ActivitiesAsEnum activitiesAsEnum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_connection);
+
+        bundle = getIntent().getExtras();
+        activitiesAsEnum = (ActivitiesAsEnum) bundle.getSerializable("activityInfo");
     }
 
 
@@ -35,5 +47,43 @@ public class NoConnectionActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void tryAgain(View view) {
+
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            Intent intent;
+            switch (activitiesAsEnum) {
+                case LANGUAGE_ACTIVITY:
+                    intent = new Intent(this, LanguageActivity.class);
+                    startActivity(intent);
+                    break;
+                case PROGRAMS_ACTIVITY:
+                    intent = new Intent(this, ProgramsActivity.class);
+                    intent.putExtra("language", bundle.getString("language"));
+                    startActivity(intent);
+                    break;
+            }
+        } else {
+            Intent intent = new Intent(this, NoConnectionActivity.class);
+            switch (activitiesAsEnum) {
+                case LANGUAGE_ACTIVITY:
+                    intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
+                    break;
+                case PROGRAMS_ACTIVITY:
+                    intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
+                    intent.putExtra("language", bundle.getString("language"));
+                    break;
+            }
+            startActivity(intent);
+        }
+
     }
 }

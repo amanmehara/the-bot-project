@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
@@ -58,7 +57,9 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, LanguageActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(context, "No Internet, No Languages!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, NoConnectionActivity.class);
+            intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
+            startActivity(intent);
         }
 
     }

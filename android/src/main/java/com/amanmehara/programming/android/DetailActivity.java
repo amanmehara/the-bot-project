@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,7 +94,10 @@ public class DetailActivity extends Activity {
                 intent.putExtra("language", bundle.getString("language"));
                 startActivity(intent);
             } else {
-                Toast.makeText(context, "No Internet, No Programs!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, NoConnectionActivity.class);
+                intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
+                intent.putExtra("language", bundle.getString("language"));
+                startActivity(intent);
             }
 
         }
