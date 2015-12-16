@@ -42,6 +42,21 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ViewHo
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+//        switch (i%4) {
+//            case 0:
+//                viewHolder.mTextView.setBackgroundColor(Color.RED);
+//                break;
+//            case 1:
+//                viewHolder.mTextView.setBackgroundColor(Color.GREEN);
+//                break;
+//            case 2:
+//                viewHolder.mTextView.setBackgroundColor(Color.BLUE);
+//                break;
+//            case 3:
+//                viewHolder.mTextView.setBackgroundColor(Color.MAGENTA);
+//                break;
+//        }
     }
 
     @Override

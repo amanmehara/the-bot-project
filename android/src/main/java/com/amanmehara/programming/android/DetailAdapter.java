@@ -36,16 +36,18 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             viewHolder.mTextView.setText(jsonObject.getString("FileName"));
 
             String html = "<html>"
-                    + "<link href=\"file:///android_asset/prism.css\" rel=\"stylesheet\"/>"
-                    + "<script src=\"file:///android_asset/prism.js\"></script>"
-                    + "<body style=\"margin:0px;\">"
-                    + "<pre class=\"line-numbers\"><code class=\"language-"
+                    + "<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400' rel='stylesheet' type='text/css'>"
+                    + "<link href='file:///android_asset/prism.css' rel='stylesheet'/>"
+                    + "<script src='file:///android_asset/prism.js'></script>"
+                    + "<body style='margin:0px; padding:0px;'>"
+                    + "<pre class='line-numbers'><code class='language-"
                     + language
-                    + "\">"
+                    + "'>"
                     + Html.escapeHtml(jsonObject.getString("FileContent"))
                     + "</code></pre>"
                     + "</body>"
                     + "</html>";
+
             viewHolder.mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
 
             WebSettings webSettings = viewHolder.mWebView.getSettings();
