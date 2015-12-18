@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +59,13 @@ public class DetailActivity extends Activity {
 
         detailAdapter = new DetailAdapter(files, bundle.getString("language"));
         detailRecyclerView.setAdapter(detailAdapter);
+
+        TextView pgogramName = (TextView) findViewById(R.id.program_name);
+        try {
+            pgogramName.setText(programDetails.getString("ProgramName"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
