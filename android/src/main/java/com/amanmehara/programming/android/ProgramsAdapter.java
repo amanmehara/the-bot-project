@@ -43,20 +43,6 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ViewHo
             e.printStackTrace();
         }
 
-//        switch (i%4) {
-//            case 0:
-//                viewHolder.mLanguageName.setBackgroundColor(Color.RED);
-//                break;
-//            case 1:
-//                viewHolder.mLanguageName.setBackgroundColor(Color.GREEN);
-//                break;
-//            case 2:
-//                viewHolder.mLanguageName.setBackgroundColor(Color.BLUE);
-//                break;
-//            case 3:
-//                viewHolder.mLanguageName.setBackgroundColor(Color.MAGENTA);
-//                break;
-//        }
     }
 
     @Override

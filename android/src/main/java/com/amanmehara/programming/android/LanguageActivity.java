@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
@@ -32,38 +33,55 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
 
-
-        String jsonLanguage = null;
-        WebServiceClient webServiceClient = new WebServiceClient();
-        try {
-            jsonLanguage = webServiceClient
-                    .execute("http://programmingwebapp.azurewebsites.net/api/languages/count")
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        languages = null;
-
-        try {
-            languages = new JSONArray(jsonLanguage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
         languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
         languageRecyclerView.setHasFixedSize(true);
 
         languageLayoutManager = new LinearLayoutManager(this);
         languageRecyclerView.setLayoutManager(languageLayoutManager);
 
-        languageAdapter = new LanguageAdapter(languages);
-        ((LanguageAdapter) languageAdapter).setListClickListener(this);
+        String jsonLanguage = null;
 
-        //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
-        languageRecyclerView.setAdapter(languageAdapter);
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            WebServiceClient webServiceClient = new WebServiceClient();
+            try {
+                jsonLanguage = webServiceClient
+                        .execute("http://programmingwebapp.azurewebsites.net/api/languages/count")
+                        .get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            languages = null;
+
+            try {
+                languages = new JSONArray(jsonLanguage);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            languageAdapter = new LanguageAdapter(languages);
+            ((LanguageAdapter) languageAdapter).setListClickListener(this);
+
+            //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
+            languageRecyclerView.setAdapter(languageAdapter);
+        } else {
+
+            languageAdapter = new LanguageAdapter(new JSONArray());
+            ((LanguageAdapter) languageAdapter).setListClickListener(this);
+
+            languageRecyclerView.setAdapter(languageAdapter);
+
+            Intent intent = new Intent(this, NoConnectionActivity.class);
+            intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
+            startActivity(intent);
+        }
     }
 
 
@@ -103,7 +121,8 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
             Intent intent = new Intent(LanguageActivity.this, ProgramsActivity.class);
 
             try {
-                intent.putExtra("language", languages.getString(position));
+                JSONObject jsonObject = languages.getJSONObject(position);
+                intent.putExtra("language", jsonObject.getString("LanguageName"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -114,7 +133,8 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
             intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
 
             try {
-                intent.putExtra("language", languages.getString(position));
+                JSONObject jsonObject = languages.getJSONObject(position);
+                intent.putExtra("language", jsonObject.getString("LanguageName"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

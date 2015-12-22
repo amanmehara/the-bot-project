@@ -37,38 +37,56 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         bundle = getIntent().getExtras();
         String language = bundle.getString("language");
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        String jsonPrograms = null;
-        WebServiceClient webServiceClient = new WebServiceClient();
-
-        try {
-            jsonPrograms = webServiceClient
-                    .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
-                            + language)
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        programs = null;
-
-        try {
-            programs = new JSONArray(jsonPrograms);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
         programsRecyclerView.setHasFixedSize(true);
 
         programsLayoutManager = new LinearLayoutManager(this);
         programsRecyclerView.setLayoutManager(programsLayoutManager);
 
-        programsAdapter = new ProgramsAdapter(programs);
-        ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+        String jsonPrograms = null;
 
-        programsRecyclerView.setAdapter(programsAdapter);
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+            WebServiceClient webServiceClient = new WebServiceClient();
+
+            try {
+                jsonPrograms = webServiceClient
+                        .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
+                                + language)
+                        .get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            programs = null;
+
+            try {
+                programs = new JSONArray(jsonPrograms);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            programsAdapter = new ProgramsAdapter(programs);
+            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+
+            programsRecyclerView.setAdapter(programsAdapter);
+        } else {
+            programsAdapter = new ProgramsAdapter(new JSONArray());
+            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+
+            programsRecyclerView.setAdapter(programsAdapter);
+
+            Intent intent = new Intent(ProgramsActivity.this, NoConnectionActivity.class);
+            intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
+            intent.putExtra("language", bundle.getString("language"));
+            startActivity(intent);
+        }
 
     }
 
@@ -89,26 +107,6 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }
-
-        if (id == android.R.id.home) {
-
-            context = this.getApplicationContext();
-            ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            boolean isConnected = activeNetworkInfo != null &&
-                    activeNetworkInfo.isConnectedOrConnecting();
-
-            if (isConnected) {
-                Intent intent = new Intent(this, LanguageActivity.class);
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(this, NoConnectionActivity.class);
-                intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
-                startActivity(intent);
-            }
-
         }
 
         return super.onOptionsItemSelected(item);

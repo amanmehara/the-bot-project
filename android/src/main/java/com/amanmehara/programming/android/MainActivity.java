@@ -3,8 +3,6 @@ package com.amanmehara.programming.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,22 +43,7 @@ public class MainActivity extends Activity {
     }
 
     public void getStarted(View view) {
-
-        context = this.getApplicationContext();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetworkInfo != null &&
-                activeNetworkInfo.isConnectedOrConnecting();
-
-        if (isConnected) {
             Intent intent = new Intent(this, LanguageActivity.class);
             startActivity(intent);
-        } else {
-            Intent intent = new Intent(this, NoConnectionActivity.class);
-            intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
-            startActivity(intent);
-        }
-
     }
 }
