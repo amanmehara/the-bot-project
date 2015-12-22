@@ -8,10 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
     private String language;
+
+    private String programCount;
 
     private JSONArray mDataset;
 
@@ -39,61 +42,64 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     @Override
     public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
         try {
-            language = mDataset.getString(i);
+            JSONObject jsonObject = mDataset.getJSONObject(i);
+            language = jsonObject.getString("LanguageName");
+            programCount = jsonObject.getString("LanguageCount");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         switch (language) {
             case "c":
-                viewHolder.mImageView.setImageResource(R.drawable.c);
-                viewHolder.mTextView.setText("C");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.c);
+                viewHolder.mLanguageName.setText("C");
                 break;
             case "cpp":
-                viewHolder.mImageView.setImageResource(R.drawable.cpp);
-                viewHolder.mTextView.setText("C++");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.cpp);
+                viewHolder.mLanguageName.setText("C++");
                 break;
             case "csharp":
-                viewHolder.mImageView.setImageResource(R.drawable.csharp);
-                viewHolder.mTextView.setText("C#");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.csharp);
+                viewHolder.mLanguageName.setText("C#");
                 break;
             case "fsharp":
-                viewHolder.mImageView.setImageResource(R.drawable.fsharp);
-                viewHolder.mTextView.setText("F#");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.fsharp);
+                viewHolder.mLanguageName.setText("F#");
                 break;
             case "groovy":
-                viewHolder.mImageView.setImageResource(R.drawable.groovy);
-                viewHolder.mTextView.setText("Groovy");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.groovy);
+                viewHolder.mLanguageName.setText("Groovy");
                 break;
             case "java":
-                viewHolder.mImageView.setImageResource(R.drawable.java);
-                viewHolder.mTextView.setText("Java");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.java);
+                viewHolder.mLanguageName.setText("Java");
                 break;
             case "javascript":
-                viewHolder.mImageView.setImageResource(R.drawable.javascript);
-                viewHolder.mTextView.setText("JavaScript");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.javascript);
+                viewHolder.mLanguageName.setText("JavaScript");
                 break;
             case "php":
-                viewHolder.mImageView.setImageResource(R.drawable.php);
-                viewHolder.mTextView.setText("PHP");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.php);
+                viewHolder.mLanguageName.setText("PHP");
                 break;
             case "python":
-                viewHolder.mImageView.setImageResource(R.drawable.python);
-                viewHolder.mTextView.setText("Python");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.python);
+                viewHolder.mLanguageName.setText("Python");
                 break;
             case "scala":
-                viewHolder.mImageView.setImageResource(R.drawable.scala);
-                viewHolder.mTextView.setText("Scala");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.scala);
+                viewHolder.mLanguageName.setText("Scala");
                 break;
             case "sql":
-                viewHolder.mImageView.setImageResource(R.drawable.sql);
-                viewHolder.mTextView.setText("SQL");
+                viewHolder.mLanguageImage.setImageResource(R.drawable.sql);
+                viewHolder.mLanguageName.setText("SQL");
                 break;
             default:
-                viewHolder.mImageView.setImageResource(R.drawable.ic_circle_logo);
-                viewHolder.mTextView.setText(language);
+                viewHolder.mLanguageImage.setImageResource(R.drawable.ic_circle_logo);
+                viewHolder.mLanguageName.setText(language);
         }
 
+        viewHolder.mLanguageCount.setText(programCount);
 
     }
 
@@ -107,13 +113,15 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTextView;
-        public ImageView mImageView;
+        public TextView mLanguageName;
+        public ImageView mLanguageImage;
+        public TextView mLanguageCount;
 
         public ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.language_name);
-            mImageView = (ImageView) v.findViewById(R.id.language_image);
+            mLanguageName = (TextView) v.findViewById(R.id.language_name);
+            mLanguageImage = (ImageView) v.findViewById(R.id.language_image);
+            mLanguageCount = (TextView) v.findViewById(R.id.language_count);
             v.setOnClickListener(this);
         }
 

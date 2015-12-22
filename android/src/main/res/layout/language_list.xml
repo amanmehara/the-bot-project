@@ -22,16 +22,26 @@
             <ImageView android:id="@+id/language_image"
                        android:layout_width="0dp"
                        android:layout_height="wrap_content"
-                       android:layout_weight="0.3"
-                       android:layout_gravity="center_vertical|center_horizontal"/>
+                       android:layout_weight="0.25"
+                       android:layout_gravity="center_vertical"/>
             <TextView
                     android:id="@+id/language_name"
                     android:layout_width="0dp"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.45"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textSize="24sp"
                     android:paddingLeft="8sp"/>
+
+            <TextView android:id="@+id/language_count"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="0.3"
+                      android:gravity="right"
+                      android:textSize="48sp"
+                      android:textColor="@color/primary_light"
+                      android:layout_gravity="center_vertical"
+                    android:text="999"/>
         </LinearLayout>
 
 

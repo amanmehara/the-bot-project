@@ -37,7 +37,7 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
         WebServiceClient webServiceClient = new WebServiceClient();
         try {
             jsonLanguage = webServiceClient
-                    .execute("http://programmingwebapp.azurewebsites.net/api/languages")
+                    .execute("http://programmingwebapp.azurewebsites.net/api/languages/count")
                     .get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -50,6 +50,8 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
 
         languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
         languageRecyclerView.setHasFixedSize(true);

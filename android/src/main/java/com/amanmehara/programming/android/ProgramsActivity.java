@@ -44,7 +44,8 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
 
         try {
             jsonPrograms = webServiceClient
-                    .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/" + language)
+                    .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
+                            + language)
                     .get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

@@ -45,16 +45,16 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ViewHo
 
 //        switch (i%4) {
 //            case 0:
-//                viewHolder.mTextView.setBackgroundColor(Color.RED);
+//                viewHolder.mLanguageName.setBackgroundColor(Color.RED);
 //                break;
 //            case 1:
-//                viewHolder.mTextView.setBackgroundColor(Color.GREEN);
+//                viewHolder.mLanguageName.setBackgroundColor(Color.GREEN);
 //                break;
 //            case 2:
-//                viewHolder.mTextView.setBackgroundColor(Color.BLUE);
+//                viewHolder.mLanguageName.setBackgroundColor(Color.BLUE);
 //                break;
 //            case 3:
-//                viewHolder.mTextView.setBackgroundColor(Color.MAGENTA);
+//                viewHolder.mLanguageName.setBackgroundColor(Color.MAGENTA);
 //                break;
 //        }
     }
