@@ -1,13 +1,14 @@
 package com.amanmehara.programming.android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 
-public class LanguageActivity extends Activity implements LanguageAdapter.ListClickListener {
+public class LanguageActivity extends AppCompatActivity implements LanguageAdapter.ListClickListener {
 
     private Context context;
 
@@ -32,6 +33,11 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
         languageRecyclerView.setHasFixedSize(true);
@@ -69,7 +75,6 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
             languageAdapter = new LanguageAdapter(languages);
             ((LanguageAdapter) languageAdapter).setListClickListener(this);
 
-            //languageAdapter = new LanguageAdapter(new String[]{hello, "Hello","Bye", "Aman", "Today", "Hi", String.valueOf(new WebServiceClient().execute("http://programmingwebapp.azurewebsites.net/api/languages"))});
             languageRecyclerView.setAdapter(languageAdapter);
         } else {
 
@@ -141,7 +146,5 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
 
             startActivity(intent);
         }
-
-
     }
 }

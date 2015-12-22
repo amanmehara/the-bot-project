@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,15 +17,12 @@ public class WebServiceClient extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute() {
         //super.onPreExecute();
-
-
     }
 
     @Override
     protected String doInBackground(String... params) {
 
         String responseEntity = null;
-        InputStream inputStream;
         try {
             URL url = new URL(params[0]);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

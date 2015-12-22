@@ -1,11 +1,11 @@
 package com.amanmehara.programming.android;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -14,9 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class DetailActivity extends Activity {
-
-    private Context context;
+public class DetailActivity extends AppCompatActivity {
 
     private RecyclerView detailRecyclerView;
     private RecyclerView.Adapter detailAdapter;
@@ -31,9 +29,12 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        bundle = getIntent().getExtras();
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        bundle = getIntent().getExtras();
 
         programDetails = null;
         try {

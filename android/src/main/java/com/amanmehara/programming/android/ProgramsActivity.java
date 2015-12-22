@@ -1,13 +1,14 @@
 package com.amanmehara.programming.android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 
-public class ProgramsActivity extends Activity implements ProgramsAdapter.ListClickListener {
+public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapter.ListClickListener {
 
     private Context context;
     private Bundle bundle;
@@ -33,6 +34,11 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle = getIntent().getExtras();
         String language = bundle.getString("language");
