@@ -8,6 +8,9 @@
     <include android:id="@+id/my_toolbar"
              layout="@layout/my_toolbar"/>
 
+    <include android:id="@+id/my_progressbar"
+             layout="@layout/my_progressbar"/>
+
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="vertical"

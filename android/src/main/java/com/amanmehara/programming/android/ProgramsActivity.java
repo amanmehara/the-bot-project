@@ -16,8 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.ExecutionException;
-
 
 public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapter.ListClickListener {
 
@@ -29,6 +27,7 @@ public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapt
     private RecyclerView.LayoutManager programsLayoutManager;
 
     private JSONArray programs;
+    private String jsonPrograms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,7 @@ public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapt
         programsLayoutManager = new LinearLayoutManager(this);
         programsRecyclerView.setLayoutManager(programsLayoutManager);
 
-        String jsonPrograms = null;
+//        String jsonPrograms = null;
 
         context = this.getApplicationContext();
         ConnectivityManager connectivityManager = (ConnectivityManager) context
@@ -59,29 +58,29 @@ public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapt
                 activeNetworkInfo.isConnectedOrConnecting();
 
         if (isConnected) {
-            WebServiceClient webServiceClient = new WebServiceClient();
 
-            try {
-                jsonPrograms = webServiceClient
-                        .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
-                                + language)
-                        .get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            new WebServiceClient(ProgramsActivity.this,
+                    new WebServiceClient.AsyncResponse() {
+                        @Override
+                        public void getResponse(String response) {
+                            jsonPrograms = response;
 
-            programs = null;
+                            programs = null;
 
-            try {
-                programs = new JSONArray(jsonPrograms);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                            try {
+                                programs = new JSONArray(jsonPrograms);
+                            } catch (JSONException e) {
+//                e.printStackTrace();
+                            }
 
-            programsAdapter = new ProgramsAdapter(programs);
-            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+                            programsAdapter = new ProgramsAdapter(programs);
+                            ((ProgramsAdapter) programsAdapter).setListClickListener(ProgramsActivity.this);
 
-            programsRecyclerView.setAdapter(programsAdapter);
+                            programsRecyclerView.setAdapter(programsAdapter);
+                        }
+                    }).execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
+                    + language);
+
         } else {
             programsAdapter = new ProgramsAdapter(new JSONArray());
             ((ProgramsAdapter) programsAdapter).setListClickListener(this);
@@ -128,7 +127,7 @@ public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapt
             intent.putExtra("language", bundle.getString("language"));
 
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         startActivity(intent);

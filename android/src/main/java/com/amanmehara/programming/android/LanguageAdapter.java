@@ -46,7 +46,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
             language = jsonObject.getString("LanguageName");
             programCount = jsonObject.getString("LanguageCount");
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         switch (language) {

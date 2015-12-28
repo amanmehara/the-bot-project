@@ -40,14 +40,14 @@ public class DetailActivity extends AppCompatActivity {
         try {
             programDetails = new JSONObject(bundle.getString("programDetails"));
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         files = null;
         try {
             files = programDetails.getJSONArray("Files");
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         detailRecyclerView = (RecyclerView) findViewById(R.id.files_recycler_view);
@@ -63,7 +63,7 @@ public class DetailActivity extends AppCompatActivity {
         try {
             pgogramName.setText(programDetails.getString("ProgramName"));
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

@@ -40,7 +40,7 @@ public class ProgramsAdapter extends RecyclerView.Adapter<ProgramsAdapter.ViewHo
             JSONObject jsonObject = mDataset.getJSONObject(i);
             viewHolder.mTextView.setText(jsonObject.getString("ProgramName"));
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
     }
