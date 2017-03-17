@@ -1,13 +1,14 @@
 package com.amanmehara.programming.android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.ExecutionException;
 
-
-public class ProgramsActivity extends Activity implements ProgramsAdapter.ListClickListener {
+public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapter.ListClickListener {
 
     private Context context;
     private Bundle bundle;
@@ -28,35 +27,20 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
     private RecyclerView.LayoutManager programsLayoutManager;
 
     private JSONArray programs;
+    private String jsonPrograms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         bundle = getIntent().getExtras();
         String language = bundle.getString("language");
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        String jsonPrograms = null;
-        WebServiceClient webServiceClient = new WebServiceClient();
-
-        try {
-            jsonPrograms = webServiceClient
-                    .execute("http://programmingwebapp.azurewebsites.net/api/programs/language/" + language)
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        programs = null;
-
-        try {
-            programs = new JSONArray(jsonPrograms);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
         programsRecyclerView.setHasFixedSize(true);
@@ -64,10 +48,50 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         programsLayoutManager = new LinearLayoutManager(this);
         programsRecyclerView.setLayoutManager(programsLayoutManager);
 
-        programsAdapter = new ProgramsAdapter(programs);
-        ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+//        String jsonPrograms = null;
 
-        programsRecyclerView.setAdapter(programsAdapter);
+        context = this.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+
+        if (isConnected) {
+
+            new WebServiceClient(ProgramsActivity.this,
+                    new WebServiceClient.AsyncResponse() {
+                        @Override
+                        public void getResponse(String response) {
+                            jsonPrograms = response;
+
+                            programs = null;
+
+                            try {
+                                programs = new JSONArray(jsonPrograms);
+                            } catch (JSONException e) {
+//                e.printStackTrace();
+                            }
+
+                            programsAdapter = new ProgramsAdapter(programs);
+                            ((ProgramsAdapter) programsAdapter).setListClickListener(ProgramsActivity.this);
+
+                            programsRecyclerView.setAdapter(programsAdapter);
+                        }
+                    }).execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
+                    + language);
+
+        } else {
+            programsAdapter = new ProgramsAdapter(new JSONArray());
+            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
+
+            programsRecyclerView.setAdapter(programsAdapter);
+
+            Intent intent = new Intent(ProgramsActivity.this, NoConnectionActivity.class);
+            intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
+            intent.putExtra("language", bundle.getString("language"));
+            startActivity(intent);
+        }
 
     }
 
@@ -90,26 +114,6 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
             return true;
         }
 
-        if (id == android.R.id.home) {
-
-            context = this.getApplicationContext();
-            ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            boolean isConnected = activeNetworkInfo != null &&
-                    activeNetworkInfo.isConnectedOrConnecting();
-
-            if (isConnected) {
-                Intent intent = new Intent(this, LanguageActivity.class);
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(this, NoConnectionActivity.class);
-                intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
-                startActivity(intent);
-            }
-
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,7 +127,7 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
             intent.putExtra("language", bundle.getString("language"));
 
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         startActivity(intent);

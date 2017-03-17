@@ -1,23 +1,20 @@
 package com.amanmehara.programming.android;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class DetailActivity extends Activity {
-
-    private Context context;
+public class DetailActivity extends AppCompatActivity {
 
     private RecyclerView detailRecyclerView;
     private RecyclerView.Adapter detailAdapter;
@@ -32,22 +29,25 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        bundle = getIntent().getExtras();
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        bundle = getIntent().getExtras();
 
         programDetails = null;
         try {
             programDetails = new JSONObject(bundle.getString("programDetails"));
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         files = null;
         try {
             files = programDetails.getJSONArray("Files");
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         detailRecyclerView = (RecyclerView) findViewById(R.id.files_recycler_view);
@@ -58,6 +58,13 @@ public class DetailActivity extends Activity {
 
         detailAdapter = new DetailAdapter(files, bundle.getString("language"));
         detailRecyclerView.setAdapter(detailAdapter);
+
+        TextView pgogramName = (TextView) findViewById(R.id.program_name);
+        try {
+            pgogramName.setText(programDetails.getString("ProgramName"));
+        } catch (JSONException e) {
+//            e.printStackTrace();
+        }
     }
 
 
@@ -81,25 +88,9 @@ public class DetailActivity extends Activity {
         }
 
         if (id == android.R.id.home) {
-
-            context = this.getApplicationContext();
-            ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            boolean isConnected = activeNetworkInfo != null &&
-                    activeNetworkInfo.isConnectedOrConnecting();
-
-            if (isConnected) {
-                Intent intent = new Intent(this, ProgramsActivity.class);
-                intent.putExtra("language", bundle.getString("language"));
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(this, NoConnectionActivity.class);
-                intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
-                intent.putExtra("language", bundle.getString("language"));
-                startActivity(intent);
-            }
-
+            Intent intent = new Intent(this, ProgramsActivity.class);
+            intent.putExtra("language", bundle.getString("language"));
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
