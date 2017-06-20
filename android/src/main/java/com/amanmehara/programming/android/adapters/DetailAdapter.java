@@ -1,4 +1,4 @@
-package com.amanmehara.programming.android;
+package com.amanmehara.programming.android.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import com.amanmehara.programming.android.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

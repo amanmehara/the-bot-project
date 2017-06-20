@@ -1,7 +1,6 @@
-package com.amanmehara.programming.android;
+package com.amanmehara.programming.android.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -12,9 +11,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.amanmehara.programming.android.adapters.LanguageAdapter;
+import com.amanmehara.programming.android.R;
+import com.amanmehara.programming.android.common.AppActivity;
+import com.amanmehara.programming.android.rest.Client;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
 public class LanguageActivity extends AppCompatActivity implements LanguageAdapter.ListClickListener {
@@ -53,26 +61,23 @@ public class LanguageActivity extends AppCompatActivity implements LanguageAdapt
 
         if (isConnected) {
 
-            new WebServiceClient(
+            new Client(
                     LanguageActivity.this,
-                    new WebServiceClient.AsyncResponse() {
-                        @Override
-                        public void getResponse(String response) {
-                            jsonLanguage = response;
+                    response -> {
+                        jsonLanguage = response;
 
-                            languages = null;
+                        languages = null;
 
-                            try {
-                                languages = new JSONArray(jsonLanguage);
-                            } catch (JSONException e) {
+                        try {
+                            languages = new JSONArray(jsonLanguage);
+                        } catch (JSONException e) {
 //                e.printStackTrace();
-                            }
-
-                            languageAdapter = new LanguageAdapter(languages);
-                            ((LanguageAdapter) languageAdapter).setListClickListener(LanguageActivity.this);
-
-                            languageRecyclerView.setAdapter(languageAdapter);
                         }
+
+                        languageAdapter = new LanguageAdapter(languages);
+                        ((LanguageAdapter) languageAdapter).setListClickListener(LanguageActivity.this);
+
+                        languageRecyclerView.setAdapter(languageAdapter);
                     }).execute("http://programmingwebapp.azurewebsites.net/api/languages/count");
 
         } else {
@@ -82,9 +87,11 @@ public class LanguageActivity extends AppCompatActivity implements LanguageAdapt
 
             languageRecyclerView.setAdapter(languageAdapter);
 
-            Intent intent = new Intent(this, NoConnectionActivity.class);
-            intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
-            startActivity(intent);
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("activityInfo",AppActivity.LANGUAGE);
+            START_ACTIVITY
+                    .apply(this,NoConnectionActivity.class)
+                    .accept(extrasMap);
         }
     }
 
@@ -113,16 +120,14 @@ public class LanguageActivity extends AppCompatActivity implements LanguageAdapt
 
     @Override
     public void listItemClicked(View view, int position) {
-
-        Intent intent = new Intent(LanguageActivity.this, ProgramsActivity.class);
-
         try {
-            JSONObject jsonObject = languages.getJSONObject(position);
-            intent.putExtra("language", jsonObject.getString("LanguageName"));
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("language",languages.getJSONObject(position).getString("LanguageName"));
+            START_ACTIVITY
+                    .apply(this,ProgramsActivity.class)
+                    .accept(extrasMap);
         } catch (JSONException e) {
 //            e.printStackTrace();
         }
-
-        startActivity(intent);
     }
 }

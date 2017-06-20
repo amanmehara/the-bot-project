@@ -1,6 +1,5 @@
-package com.amanmehara.programming.android;
+package com.amanmehara.programming.android.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,9 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import com.amanmehara.programming.android.adapters.DetailAdapter;
+import com.amanmehara.programming.android.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -88,9 +95,11 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         if (id == android.R.id.home) {
-            Intent intent = new Intent(this, ProgramsActivity.class);
-            intent.putExtra("language", bundle.getString("language"));
-            startActivity(intent);
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("language",bundle.getString("language"));
+            START_ACTIVITY
+                    .apply(this,ProgramsActivity.class)
+                    .accept(extrasMap);
         }
 
         return super.onOptionsItemSelected(item);

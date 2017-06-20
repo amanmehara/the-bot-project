@@ -1,7 +1,6 @@
-package com.amanmehara.programming.android;
+package com.amanmehara.programming.android.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -10,13 +9,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.amanmehara.programming.android.R;
+import com.amanmehara.programming.android.common.AppActivity;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
 public class NoConnectionActivity extends AppCompatActivity {
 
     private Context context;
     private Bundle bundle;
-    private ActivitiesAsEnum activitiesAsEnum;
+    private AppActivity appActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +36,7 @@ public class NoConnectionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle = getIntent().getExtras();
-        activitiesAsEnum = (ActivitiesAsEnum) bundle.getSerializable("activityInfo");
+        appActivity = (AppActivity) bundle.getSerializable("activityInfo");
     }
 
 
@@ -65,30 +72,39 @@ public class NoConnectionActivity extends AppCompatActivity {
                 activeNetworkInfo.isConnectedOrConnecting();
 
         if (isConnected) {
-            Intent intent;
-            switch (activitiesAsEnum) {
-                case LANGUAGE_ACTIVITY:
-                    intent = new Intent(this, LanguageActivity.class);
-                    startActivity(intent);
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            switch (appActivity) {
+                case LANGUAGE:
+                    START_ACTIVITY
+                            .apply(this,LanguageActivity.class)
+                            .accept(extrasMap);
                     break;
-                case PROGRAMS_ACTIVITY:
-                    intent = new Intent(this, ProgramsActivity.class);
-                    intent.putExtra("language", bundle.getString("language"));
-                    startActivity(intent);
+                case PROGRAM:
+                    extrasMap.put("language",bundle.getString("language"));
+                    START_ACTIVITY
+                            .apply(this,ProgramsActivity.class)
+                            .accept(extrasMap);
                     break;
+                default:
             }
         } else {
-            Intent intent = new Intent(this, NoConnectionActivity.class);
-            switch (activitiesAsEnum) {
-                case LANGUAGE_ACTIVITY:
-                    intent.putExtra("activityInfo", ActivitiesAsEnum.LANGUAGE_ACTIVITY);
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            switch (appActivity) {
+                case LANGUAGE:
+                    extrasMap.put("activityInfo",AppActivity.LANGUAGE);
+                    START_ACTIVITY
+                            .apply(this,NoConnectionActivity.class)
+                            .accept(extrasMap);
                     break;
-                case PROGRAMS_ACTIVITY:
-                    intent.putExtra("activityInfo", ActivitiesAsEnum.PROGRAMS_ACTIVITY);
-                    intent.putExtra("language", bundle.getString("language"));
+                case PROGRAM:
+                    extrasMap.put("activityInfo", AppActivity.PROGRAM);
+                    extrasMap.put("language", bundle.getString("language"));
+                    START_ACTIVITY
+                            .apply(this,NoConnectionActivity.class)
+                            .accept(extrasMap);
                     break;
+                default:
             }
-            startActivity(intent);
         }
 
     }

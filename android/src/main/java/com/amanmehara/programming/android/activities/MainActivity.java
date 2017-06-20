@@ -1,12 +1,18 @@
-package com.amanmehara.programming.android;
+package com.amanmehara.programming.android.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.amanmehara.programming.android.R;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getStarted(View view) {
-            Intent intent = new Intent(this, LanguageActivity.class);
-            startActivity(intent);
+        Map<String,Serializable> extrasMap = new HashMap<>();
+        START_ACTIVITY
+                .apply(this,LanguageActivity.class)
+                .accept(extrasMap);
     }
 }

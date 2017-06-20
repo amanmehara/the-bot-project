@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.amanmehara.programming.android.ProgramsActivity">
+              tools:context="com.amanmehara.programming.android.activities.ProgramsActivity">
 
     <include android:id="@+id/my_toolbar"
              layout="@layout/my_toolbar"/>

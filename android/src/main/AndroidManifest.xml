@@ -11,7 +11,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".MainActivity"
+                android:name=".activities.MainActivity"
                 android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -20,33 +20,33 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".LanguageActivity"
+                android:name=".activities.LanguageActivity"
                 android:label="@string/app_name"
-                android:parentActivityName=".MainActivity">
+                android:parentActivityName=".activities.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.amanmehara.programming.android.MainActivity"/>
+                    android:value="com.amanmehara.programming.android.activities.MainActivity"/>
         </activity>
         <activity
-                android:name=".ProgramsActivity"
+                android:name=".activities.ProgramsActivity"
                 android:label="@string/app_name"
-                android:parentActivityName=".LanguageActivity">
+                android:parentActivityName=".activities.LanguageActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.amanmehara.programming.android.LanguageActivity"/>
+                    android:value="com.amanmehara.programming.android.activities.LanguageActivity"/>
         </activity>
         <activity
-                android:name=".DetailActivity"
+                android:name=".activities.DetailActivity"
                 android:label="@string/app_name">
         </activity>
         <activity
-                android:name=".NoConnectionActivity"
+                android:name=".activities.NoConnectionActivity"
                 android:label="@string/app_name"
                 android:noHistory="true"
-                android:parentActivityName=".MainActivity">
+                android:parentActivityName=".activities.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.amanmehara.programming.android.MainActivity"/>
+                    android:value="com.amanmehara.programming.android.activities.MainActivity"/>
         </activity>
     </application>
 

@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.amanmehara.programming.android.NoConnectionActivity">
+              tools:context="com.amanmehara.programming.android.activities.NoConnectionActivity">
 
     <include android:id="@+id/my_toolbar"
              layout="@layout/my_toolbar"/>
