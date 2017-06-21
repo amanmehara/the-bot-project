@@ -1,16 +1,16 @@
 package com.amanmehara.programming.android.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.LanguageAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.AppActivity;
@@ -25,7 +25,7 @@ import java.util.Map;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class LanguageActivity extends AppCompatActivity implements LanguageAdapter.ListClickListener {
+public class LanguageActivity extends Activity implements LanguageAdapter.ListClickListener {
 
     private Context context;
 
@@ -42,9 +42,9 @@ public class LanguageActivity extends AppCompatActivity implements LanguageAdapt
         setContentView(R.layout.activity_language);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setActionBar(myToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
         languageRecyclerView.setHasFixedSize(true);

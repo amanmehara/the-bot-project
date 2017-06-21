@@ -1,16 +1,16 @@
 package com.amanmehara.programming.android.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.ProgramsAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.AppActivity;
@@ -25,7 +25,7 @@ import java.util.Map;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapter.ListClickListener {
+public class ProgramsActivity extends Activity implements ProgramsAdapter.ListClickListener {
 
     private Context context;
     private Bundle bundle;
@@ -43,9 +43,9 @@ public class ProgramsActivity extends AppCompatActivity implements ProgramsAdapt
         setContentView(R.layout.activity_programs);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setActionBar(myToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle = getIntent().getExtras();
         String language = bundle.getString("language");

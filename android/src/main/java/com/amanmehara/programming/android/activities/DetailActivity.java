@@ -1,13 +1,13 @@
 package com.amanmehara.programming.android.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.DetailAdapter;
 import com.amanmehara.programming.android.R;
 import org.json.JSONArray;
@@ -21,7 +21,7 @@ import java.util.Map;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends Activity {
 
     private RecyclerView detailRecyclerView;
     private RecyclerView.Adapter detailAdapter;
@@ -37,9 +37,9 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setActionBar(myToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle = getIntent().getExtras();
 

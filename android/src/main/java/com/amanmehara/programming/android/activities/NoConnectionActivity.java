@@ -1,14 +1,14 @@
 package com.amanmehara.programming.android.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.AppActivity;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class NoConnectionActivity extends AppCompatActivity {
+public class NoConnectionActivity extends Activity {
 
     private Context context;
     private Bundle bundle;
@@ -31,9 +31,9 @@ public class NoConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_no_connection);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setActionBar(myToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         bundle = getIntent().getExtras();
         appActivity = (AppActivity) bundle.getSerializable("activityInfo");
