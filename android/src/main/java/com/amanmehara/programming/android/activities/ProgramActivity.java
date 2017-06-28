@@ -1,20 +1,16 @@
 package com.amanmehara.programming.android.activities;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.ProgramsAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.AppActivity;
-import com.amanmehara.programming.android.rest.Client;
+import com.amanmehara.programming.android.rest.RestClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -22,17 +18,17 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
+import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class ProgramsActivity extends Activity implements ProgramsAdapter.ListClickListener {
+public class ProgramActivity extends Activity implements ProgramsAdapter.ListClickListener {
 
-    private Context context;
     private Bundle bundle;
 
     private RecyclerView programsRecyclerView;
     private RecyclerView.Adapter programsAdapter;
-    private RecyclerView.LayoutManager programsLayoutManager;
 
     private JSONArray programs;
     private String jsonPrograms;
@@ -42,10 +38,7 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setActionBar(myToolbar);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
 
         bundle = getIntent().getExtras();
         String language = bundle.getString("language");
@@ -53,21 +46,14 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
         programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
         programsRecyclerView.setHasFixedSize(true);
 
-        programsLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager programsLayoutManager = new LinearLayoutManager(this);
         programsRecyclerView.setLayoutManager(programsLayoutManager);
 
 //        String jsonPrograms = null;
 
-        context = this.getApplicationContext();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetworkInfo != null &&
-                activeNetworkInfo.isConnectedOrConnecting();
+        if (IS_CONNECTED.test(getApplicationContext())) {
 
-        if (isConnected) {
-
-            new Client(ProgramsActivity.this,
+            new RestClient(ProgramActivity.this,
                     response -> {
                         jsonPrograms = response;
 
@@ -80,7 +66,7 @@ public class ProgramsActivity extends Activity implements ProgramsAdapter.ListCl
                         }
 
                         programsAdapter = new ProgramsAdapter(programs);
-                        ((ProgramsAdapter) programsAdapter).setListClickListener(ProgramsActivity.this);
+                        ((ProgramsAdapter) programsAdapter).setListClickListener(ProgramActivity.this);
 
                         programsRecyclerView.setAdapter(programsAdapter);
                     }).execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"

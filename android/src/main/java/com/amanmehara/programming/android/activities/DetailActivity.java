@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.DetailAdapter;
 import com.amanmehara.programming.android.R;
 import org.json.JSONArray;
@@ -18,52 +17,44 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
 public class DetailActivity extends Activity {
 
-    private RecyclerView detailRecyclerView;
-    private RecyclerView.Adapter detailAdapter;
-    private RecyclerView.LayoutManager detailLayoutManager;
-
     private Bundle bundle;
-    private JSONObject programDetails;
-    private JSONArray files;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setActionBar(myToolbar);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
 
         bundle = getIntent().getExtras();
 
-        programDetails = null;
+        JSONObject programDetails = null;
         try {
             programDetails = new JSONObject(bundle.getString("programDetails"));
         } catch (JSONException e) {
 //            e.printStackTrace();
         }
 
-        files = null;
+        JSONArray files = null;
         try {
             files = programDetails.getJSONArray("Files");
         } catch (JSONException e) {
 //            e.printStackTrace();
         }
 
-        detailRecyclerView = (RecyclerView) findViewById(R.id.files_recycler_view);
+        RecyclerView detailRecyclerView = (RecyclerView) findViewById(R.id.files_recycler_view);
         detailRecyclerView.setHasFixedSize(true);
 
-        detailLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager detailLayoutManager = new LinearLayoutManager(this);
         detailRecyclerView.setLayoutManager(detailLayoutManager);
 
-        detailAdapter = new DetailAdapter(files, bundle.getString("language"));
+        RecyclerView.Adapter detailAdapter = new DetailAdapter(files, bundle.getString("language"));
         detailRecyclerView.setAdapter(detailAdapter);
 
         TextView pgogramName = (TextView) findViewById(R.id.program_name);
@@ -98,7 +89,7 @@ public class DetailActivity extends Activity {
             Map<String,Serializable> extrasMap = new HashMap<>();
             extrasMap.put("language",bundle.getString("language"));
             START_ACTIVITY
-                    .apply(this,ProgramsActivity.class)
+                    .apply(this,ProgramActivity.class)
                     .accept(extrasMap);
         }
 

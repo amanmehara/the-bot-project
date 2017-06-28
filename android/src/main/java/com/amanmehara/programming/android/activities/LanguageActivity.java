@@ -2,91 +2,74 @@ package com.amanmehara.programming.android.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toolbar;
 import com.amanmehara.programming.android.adapters.LanguageAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.AppActivity;
-import com.amanmehara.programming.android.rest.Client;
+import com.amanmehara.programming.android.common.Constants;
+import com.amanmehara.programming.android.rest.RestClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
+import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
+import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
+public class LanguageActivity extends Activity {
 
-public class LanguageActivity extends Activity implements LanguageAdapter.ListClickListener {
+    private static final String TAG = LanguageActivity.class.getSimpleName();
+    private static final String LANGUAGES_PATH = "content?ref=master";
 
-    private Context context;
+    private static final Function<Context,BiConsumer<String,JSONArray>> ON_CLICK_CALLBACK
+            = context -> (language, programs) -> {
+        Map<String,Serializable> extrasMap = new HashMap<>();
+        extrasMap.put("language",language);
+        extrasMap.put("programs",programs.toString());
+        START_ACTIVITY.apply(context,ProgramActivity.class).accept(extrasMap);
+    };
 
-    private RecyclerView languageRecyclerView;
-    private RecyclerView.Adapter languageAdapter;
-    private RecyclerView.LayoutManager languageLayoutManager;
-
-    private JSONArray languages;
-    private String jsonLanguage;
+    private static final Function<Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
+            = activity -> (recyclerView, jsonArray) -> {
+        LanguageAdapter languageAdapter = new LanguageAdapter(activity,jsonArray,ON_CLICK_CALLBACK);
+        recyclerView.setAdapter(languageAdapter);
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
+        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setActionBar(myToolbar);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager languageLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(languageLayoutManager);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        languageRecyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
-        languageRecyclerView.setHasFixedSize(true);
-
-        languageLayoutManager = new LinearLayoutManager(this);
-        languageRecyclerView.setLayoutManager(languageLayoutManager);
-
-        context = this.getApplicationContext();
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetworkInfo != null &&
-                activeNetworkInfo.isConnectedOrConnecting();
-
-        if (isConnected) {
-
-            new Client(
+        if (IS_CONNECTED.test(getApplicationContext())) {
+            new RestClient(
                     LanguageActivity.this,
                     response -> {
-                        jsonLanguage = response;
-
-                        languages = null;
-
+                        JSONArray languages = new JSONArray();
                         try {
-                            languages = new JSONArray(jsonLanguage);
+                            languages = new JSONArray(response);
                         } catch (JSONException e) {
-//                e.printStackTrace();
+                            Log.e(TAG,e.getMessage());
                         }
-
-                        languageAdapter = new LanguageAdapter(languages);
-                        ((LanguageAdapter) languageAdapter).setListClickListener(LanguageActivity.this);
-
-                        languageRecyclerView.setAdapter(languageAdapter);
-                    }).execute("http://programmingwebapp.azurewebsites.net/api/languages/count");
-
+                        SET_ADAPTER.apply(this).accept(recyclerView,languages);
+                    }).execute(Constants.ENDPOINT + LANGUAGES_PATH);
         } else {
-
-            languageAdapter = new LanguageAdapter(new JSONArray());
-            ((LanguageAdapter) languageAdapter).setListClickListener(this);
-
-            languageRecyclerView.setAdapter(languageAdapter);
-
+            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
             Map<String,Serializable> extrasMap = new HashMap<>();
             extrasMap.put("activityInfo",AppActivity.LANGUAGE);
             START_ACTIVITY
@@ -94,7 +77,6 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
                     .accept(extrasMap);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,29 +87,12 @@ public class LanguageActivity extends Activity implements LanguageAdapter.ListCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void listItemClicked(View view, int position) {
-        try {
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("language",languages.getJSONObject(position).getString("LanguageName"));
-            START_ACTIVITY
-                    .apply(this,ProgramsActivity.class)
-                    .accept(extrasMap);
-        } catch (JSONException e) {
-//            e.printStackTrace();
-        }
-    }
 }

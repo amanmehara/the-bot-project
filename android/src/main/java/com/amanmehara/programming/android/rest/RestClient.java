@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 /**
  * Created by @amanmehara on 20-06-2017.
  */
-public class Client extends AsyncTask<String,Integer,String> {
+public class RestClient extends AsyncTask<String,Integer,String> {
 
-    private static final String TAG = Client.class.getSimpleName();
+    private static final String TAG = RestClient.class.getSimpleName();
     private final Consumer<String> callback;
     private final ProgressBar progressBar;
     private String response;
 
-    public Client(
+    public RestClient(
             Activity activity,
             Consumer<String> callback
     ) {

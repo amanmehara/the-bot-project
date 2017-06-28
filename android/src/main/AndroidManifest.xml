@@ -28,7 +28,7 @@
                     android:value="com.amanmehara.programming.android.activities.MainActivity"/>
         </activity>
         <activity
-                android:name=".activities.ProgramsActivity"
+                android:name=".activities.ProgramActivity"
                 android:label="@string/app_name"
                 android:parentActivityName=".activities.LanguageActivity">
             <meta-data
