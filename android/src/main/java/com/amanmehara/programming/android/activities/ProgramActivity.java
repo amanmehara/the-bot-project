@@ -1,89 +1,67 @@
 package com.amanmehara.programming.android.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import com.amanmehara.programming.android.adapters.ProgramsAdapter;
+import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.AppActivity;
-import com.amanmehara.programming.android.rest.RestClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
 import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
 
-public class ProgramActivity extends Activity implements ProgramsAdapter.ListClickListener {
+public class ProgramActivity extends Activity {
 
-    private Bundle bundle;
+    private static final String TAG = ProgramActivity.class.getSimpleName();
 
-    private RecyclerView programsRecyclerView;
-    private RecyclerView.Adapter programsAdapter;
+    private final Function<Context,BiConsumer<String,JSONObject>> ON_CLICK_CALLBACK
+            = context -> (language, programs) -> {
+        Map<String,Serializable> extrasMap = new HashMap<>();
+        extrasMap.put("language",language);
+        extrasMap.put("programs",programs.toString());
+        START_ACTIVITY.apply(context,DetailActivity.class).accept(extrasMap);
+    };
 
-    private JSONArray programs;
-    private String jsonPrograms;
+    private final BiFunction<Activity,String,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
+            = (activity,language) -> (recyclerView, jsonArray) -> {
+        ProgramAdapter programsAdapter = new ProgramAdapter(activity,language,jsonArray,ON_CLICK_CALLBACK);
+        recyclerView.setAdapter(programsAdapter);
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
-
         SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
 
-        bundle = getIntent().getExtras();
-        String language = bundle.getString("language");
+        Bundle bundle = getIntent().getExtras();
 
-        programsRecyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
-        programsRecyclerView.setHasFixedSize(true);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
+        recyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager programsLayoutManager = new LinearLayoutManager(this);
-        programsRecyclerView.setLayoutManager(programsLayoutManager);
+        recyclerView.setLayoutManager(programsLayoutManager);
 
-//        String jsonPrograms = null;
-
-        if (IS_CONNECTED.test(getApplicationContext())) {
-
-            new RestClient(ProgramActivity.this,
-                    response -> {
-                        jsonPrograms = response;
-
-                        programs = null;
-
-                        try {
-                            programs = new JSONArray(jsonPrograms);
-                        } catch (JSONException e) {
-//                e.printStackTrace();
-                        }
-
-                        programsAdapter = new ProgramsAdapter(programs);
-                        ((ProgramsAdapter) programsAdapter).setListClickListener(ProgramActivity.this);
-
-                        programsRecyclerView.setAdapter(programsAdapter);
-                    }).execute("http://programmingwebapp.azurewebsites.net/api/programs/language/"
-                    + language);
-
-        } else {
-            programsAdapter = new ProgramsAdapter(new JSONArray());
-            ((ProgramsAdapter) programsAdapter).setListClickListener(this);
-
-            programsRecyclerView.setAdapter(programsAdapter);
-
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("activityInfo", AppActivity.PROGRAM);
-            extrasMap.put("language", bundle.getString("language"));
-            START_ACTIVITY
-                    .apply(this,NoConnectionActivity.class)
-                    .accept(extrasMap);
+        try {
+            SET_ADAPTER.apply(this,bundle.getString("language")).accept(recyclerView,new JSONArray(bundle.getString("programs")));
+        } catch (JSONException e) {
+            Log.e(TAG,e.getMessage());
+            SET_ADAPTER.apply(this,bundle.getString("language")).accept(recyclerView,new JSONArray());
         }
 
     }
@@ -110,20 +88,4 @@ public class ProgramActivity extends Activity implements ProgramsAdapter.ListCli
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void listItemClicked(View view, int position) {
-
-        try {
-
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("programDetails",programs.getJSONObject(position).toString());
-            extrasMap.put("language",bundle.getString("language"));
-            START_ACTIVITY
-                    .apply(this,DetailActivity.class)
-                    .accept(extrasMap);
-
-        } catch (JSONException e) {
-//            e.printStackTrace();
-        }
-    }
 }

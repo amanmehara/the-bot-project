@@ -60,13 +60,12 @@ public class LanguageActivity extends Activity {
             new RestClient(
                     LanguageActivity.this,
                     response -> {
-                        JSONArray languages = new JSONArray();
                         try {
-                            languages = new JSONArray(response);
+                            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray(response));
                         } catch (JSONException e) {
                             Log.e(TAG,e.getMessage());
+                            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
                         }
-                        SET_ADAPTER.apply(this).accept(recyclerView,languages);
                     }).execute(Constants.ENDPOINT + LANGUAGES_PATH);
         } else {
             SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());

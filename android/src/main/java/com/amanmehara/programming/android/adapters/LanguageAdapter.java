@@ -29,9 +29,9 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
     private static final String TAG = LanguageAdapter.class.getSimpleName();
     private static final SparseArray<JSONArray> programs = new SparseArray<>();
-    private Activity activity;
-    private JSONArray languages;
-    private Function<Context,BiConsumer<String,JSONArray>> onClickCallback;
+    private final Activity activity;
+    private final JSONArray languages;
+    private final Function<Context,BiConsumer<String,JSONArray>> onClickCallback;
 
     public LanguageAdapter(
             Activity activity,
