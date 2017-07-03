@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
@@ -29,11 +28,12 @@ public class ProgramActivity extends Activity {
 
     private static final String TAG = ProgramActivity.class.getSimpleName();
 
-    private final Function<Context,BiConsumer<String,JSONObject>> ON_CLICK_CALLBACK
-            = context -> (language, programs) -> {
+    private final BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> ON_CLICK_CALLBACK
+            = (context, programs) -> (language, program) -> {
         Map<String,Serializable> extrasMap = new HashMap<>();
         extrasMap.put("language",language);
         extrasMap.put("programs",programs.toString());
+        extrasMap.put("program",program.toString());
         START_ACTIVITY.apply(context,DetailActivity.class).accept(extrasMap);
     };
 
@@ -75,16 +75,11 @@ public class ProgramActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHolder> {
 
@@ -22,13 +22,13 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
     private final Activity activity;
     private final String language;
     private final JSONArray programs;
-    private final Function<Context,BiConsumer<String,JSONObject>> onClickCallback;
+    private final BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> onClickCallback;
 
     public ProgramAdapter(
             Activity activity,
             String language,
             JSONArray programs,
-            Function<Context,BiConsumer<String,JSONObject>> onClickCallback
+            BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> onClickCallback
     ) {
         this.activity = activity;
         this.language = language;
@@ -72,7 +72,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
         public void onClick(View v) {
             try {
                 onClickCallback
-                        .apply(activity.getApplicationContext())
+                        .apply(activity.getApplicationContext(),programs)
                         .accept(language,programs.getJSONObject(getLayoutPosition()));
             } catch (Exception e) {
                 e.printStackTrace();

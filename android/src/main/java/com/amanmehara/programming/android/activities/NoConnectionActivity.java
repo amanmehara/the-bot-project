@@ -16,7 +16,6 @@ import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED
 import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
-
 public class NoConnectionActivity extends Activity {
 
     private Bundle bundle;
@@ -59,10 +58,12 @@ public class NoConnectionActivity extends Activity {
                             .apply(this,LanguageActivity.class)
                             .accept(extrasMap);
                     break;
-                case PROGRAM:
+                case DETAIL:
                     extrasMap.put("language",bundle.getString("language"));
+                    extrasMap.put("programs",bundle.getString("programs"));
+                    extrasMap.put("program",bundle.getString("program"));
                     START_ACTIVITY
-                            .apply(this,ProgramActivity.class)
+                            .apply(this,DetailActivity.class)
                             .accept(extrasMap);
                     break;
                 default:
@@ -76,9 +77,11 @@ public class NoConnectionActivity extends Activity {
                             .apply(this,NoConnectionActivity.class)
                             .accept(extrasMap);
                     break;
-                case PROGRAM:
-                    extrasMap.put("activityInfo", AppActivity.PROGRAM);
-                    extrasMap.put("language", bundle.getString("language"));
+                case DETAIL:
+                    extrasMap.put("activityInfo", AppActivity.DETAIL);
+                    extrasMap.put("language",bundle.getString("language"));
+                    extrasMap.put("programs",bundle.getString("programs"));
+                    extrasMap.put("program",bundle.getString("program"));
                     START_ACTIVITY
                             .apply(this,NoConnectionActivity.class)
                             .accept(extrasMap);

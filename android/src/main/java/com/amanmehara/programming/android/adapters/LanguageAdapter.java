@@ -25,6 +25,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.amanmehara.programming.android.common.Type.DIRECTORY;
+import static com.amanmehara.programming.android.common.Type.FILE;
+
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
     private static final String TAG = LanguageAdapter.class.getSimpleName();
@@ -42,17 +45,15 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         this.onClickCallback = onClickCallback;
     }
 
-    private static final Function<Activity,BiConsumer<String,Integer>> FETCH_PROGRAMS
-            = activity -> (url,position) -> {
-        new RestClient(activity, response -> {
-            try {
-                programs.append(position,new JSONArray(response));
-            } catch (JSONException e) {
-                Log.e(TAG,e.getMessage());
-                programs.append(position,new JSONArray());
-            }
-        }).execute(url);
-    };
+    private static final Function<Activity,BiConsumer<String,Integer>> FETCH_PROGRAM
+            = activity -> (url,position) -> new RestClient(activity, response -> {
+                try {
+                    programs.append(position,new JSONArray(response));
+                } catch (JSONException e) {
+                    Log.e(TAG,e.getMessage());
+                    programs.append(position,new JSONArray());
+                }
+            }).execute(url);
 
     private static final Function<String,String> OBTAIN_LANGUAGE_NAME = (name) -> {
         Optional<Language> optLanguage = Stream
@@ -66,7 +67,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         int count = 0;
         for(int i=0; i<programs.length(); i++) {
             try {
-                if(programs.getJSONObject(i).get("type").equals("dir")) {
+                if(programs.getJSONObject(i).get("type").equals(DIRECTORY.getValue())) {
                     count++;
                 }
             } catch (JSONException e) {
@@ -81,7 +82,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         for(int i=0; i<programs.length(); i++) {
             try {
                 JSONObject jsonObject = programs.getJSONObject(i);
-                if(jsonObject.getString("name").equals("icon.png") && jsonObject.getString("type").equals("file")) {
+                if(jsonObject.getString("name").equals("icon.png") && jsonObject.getString("type").equals(FILE.getValue())) {
                     new RestClient(activity, response -> {
                         try {
                             JSONObject icon = new JSONObject(response);
@@ -116,7 +117,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
         try {
             JSONObject jsonObject = languages.getJSONObject(i);
-            FETCH_PROGRAMS.apply(activity).accept(jsonObject.getString("url"),i);
+            FETCH_PROGRAM.apply(activity).accept(jsonObject.getString("url"),i);
             viewHolder.mLanguageName.setText(OBTAIN_LANGUAGE_NAME.apply(jsonObject.getString("name")));
             viewHolder.mLanguageCount.setText(OBTAIN_PROGRAM_COUNT.apply(programs.get(i)));
             SET_LANGUAGE_LOGO.apply(activity).accept(viewHolder,programs.get(i));
