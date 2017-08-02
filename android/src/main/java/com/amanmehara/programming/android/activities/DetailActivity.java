@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.amanmehara.programming.android.common.Constants.OAUTH;
 import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
 import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
@@ -94,7 +95,7 @@ public class DetailActivity extends Activity {
                                 SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
                             }
                         }
-                ).execute(programUrlOptional.get());
+                ).execute(programUrlOptional.get() + OAUTH);
             } else {
                 SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
                 Map<String,Serializable> extrasMap = new HashMap<>();

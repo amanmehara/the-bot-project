@@ -22,9 +22,11 @@ import org.json.JSONObject;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.amanmehara.programming.android.common.Constants.OAUTH;
 import static com.amanmehara.programming.android.common.Type.DIRECTORY;
 import static com.amanmehara.programming.android.common.Type.FILE;
 
@@ -44,24 +46,6 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         this.languages = languages;
         this.onClickCallback = onClickCallback;
     }
-
-    private static final Function<Activity,BiConsumer<String,Integer>> FETCH_PROGRAM
-            = activity -> (url,position) -> new RestClient(activity, response -> {
-                try {
-                    programs.append(position,new JSONArray(response));
-                } catch (JSONException e) {
-                    Log.e(TAG,e.getMessage());
-                    programs.append(position,new JSONArray());
-                }
-            }).execute(url);
-
-    private static final Function<String,String> OBTAIN_LANGUAGE_NAME = (name) -> {
-        Optional<Language> optLanguage = Stream
-                .of(Language.values())
-                .filter(language -> language.name().matches(name.toUpperCase()))
-                .findAny();
-        return optLanguage.map(Language::getDisplay).orElse(name);
-    };
 
     private static final Function<JSONArray,Integer> OBTAIN_PROGRAM_COUNT = programs -> {
         int count = 0;
@@ -97,13 +81,33 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                             Log.e(TAG,e.getMessage());
                             viewHolder.mLanguageImage.setImageResource(R.drawable.ic_circle_logo);
                         }
-                    }).execute(jsonObject.getString("url"));
+                    }).execute(jsonObject.getString("url")+OAUTH);
                 }
             } catch (JSONException e) {
                 Log.e(TAG,e.getMessage());
                 viewHolder.mLanguageImage.setImageResource(R.drawable.ic_circle_logo);
             }
         }
+    };
+
+    private static final BiFunction<Activity,ViewHolder,BiConsumer<String,Integer>> FETCH_PROGRAM
+            = (activity,viewHolder) -> (url,position) -> new RestClient(activity, response -> {
+        try {
+            programs.append(position,new JSONArray(response));
+        } catch (JSONException e) {
+            Log.e(TAG,e.getMessage());
+            programs.append(position,new JSONArray());
+        }
+        viewHolder.mLanguageCount.setText(String.valueOf(OBTAIN_PROGRAM_COUNT.apply(programs.get(position))));
+        SET_LANGUAGE_LOGO.apply(activity).accept(viewHolder,programs.get(position));
+    }).execute(url+OAUTH);
+
+    private static final Function<String,String> OBTAIN_LANGUAGE_NAME = (name) -> {
+        Optional<Language> optLanguage = Stream
+                .of(Language.values())
+                .filter(language -> language.name().matches(name.toUpperCase()))
+                .findAny();
+        return optLanguage.map(Language::getDisplay).orElse(name);
     };
 
     @Override
@@ -117,10 +121,8 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
         try {
             JSONObject jsonObject = languages.getJSONObject(i);
-            FETCH_PROGRAM.apply(activity).accept(jsonObject.getString("url"),i);
+            FETCH_PROGRAM.apply(activity,viewHolder).accept(jsonObject.getString("url"),i);
             viewHolder.mLanguageName.setText(OBTAIN_LANGUAGE_NAME.apply(jsonObject.getString("name")));
-            viewHolder.mLanguageCount.setText(OBTAIN_PROGRAM_COUNT.apply(programs.get(i)));
-            SET_LANGUAGE_LOGO.apply(activity).accept(viewHolder,programs.get(i));
         } catch (JSONException e) {
             Log.e(TAG,e.getMessage());
         }

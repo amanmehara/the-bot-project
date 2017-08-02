@@ -20,9 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.amanmehara.programming.android.common.Constants.OAUTH;
 import static com.amanmehara.programming.android.common.Type.FILE;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
@@ -40,16 +41,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         this.contents = contents;
     }
 
-    private static final Function<Activity,BiConsumer<String,Integer>> RESOLVE_CONTENT
-            = activity -> (url,position) -> new RestClient(activity, response -> {
-        try {
-            resolvedContents.append(position,new JSONObject(response));
-        } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
-            resolvedContents.append(position,new JSONObject());
-        }
-    }).execute(url);
-
     private static final UnaryOperator<String> DECODE_CONTENT = content -> new String(Base64.decode(content,Base64.DEFAULT));
 
     private static final UnaryOperator<String> CONSTRUCT_HTML = content
@@ -66,6 +57,21 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             + "</body>"
             + "</html>";
 
+    private static final BiFunction<Activity,ViewHolder,BiConsumer<String,Integer>> RESOLVE_CONTENT
+            = (activity,viewHolder) -> (url,position) -> new RestClient(activity, response -> {
+        try {
+            resolvedContents.append(position,new JSONObject(response));
+            if(resolvedContents.get(position).getString("type").equals(FILE.getValue())) {
+                String html = CONSTRUCT_HTML.apply(DECODE_CONTENT.apply(resolvedContents.get(position).getString("content")));
+                viewHolder.mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+            }
+            WebSettings webSettings = viewHolder.mWebView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+        } catch (JSONException e) {
+            Log.e(TAG,e.getMessage());
+        }
+    }).execute(url+OAUTH);
+
     @Override
     public DetailAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
@@ -77,15 +83,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     public void onBindViewHolder(DetailAdapter.ViewHolder viewHolder, int i) {
         try {
             JSONObject jsonObject = contents.getJSONObject(i);
-            RESOLVE_CONTENT.apply(activity).accept(jsonObject.getString("url"),i);
+            RESOLVE_CONTENT.apply(activity,viewHolder).accept(jsonObject.getString("url"),i);
             viewHolder.mTextView.setText(jsonObject.getString("name"));
-            String content = DECODE_CONTENT.apply(resolvedContents.get(i).getString("content"));
-            if(resolvedContents.get(i).getString("type").equals(FILE.getValue())) {
-                String html = CONSTRUCT_HTML.apply(content);
-                viewHolder.mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
-            }
-            WebSettings webSettings = viewHolder.mWebView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
         } catch (JSONException e) {
             Log.e(TAG,e.getMessage());
         }

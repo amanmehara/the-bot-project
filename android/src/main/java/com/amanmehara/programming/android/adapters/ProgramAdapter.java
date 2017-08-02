@@ -75,7 +75,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
                         .apply(activity.getApplicationContext(),programs)
                         .accept(language,programs.getJSONObject(getLayoutPosition()));
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG,e.getMessage());
             }
         }
     }

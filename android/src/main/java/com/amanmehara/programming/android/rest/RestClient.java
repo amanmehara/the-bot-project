@@ -10,10 +10,11 @@ import com.amanmehara.programming.android.R;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by @amanmehara on 20-06-2017.
@@ -43,7 +44,7 @@ public class RestClient extends AsyncTask<String,Integer,String> {
     protected String doInBackground(String... params) {
         try {
             URL url = new URL(params[0]);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection httpURLConnection = (HttpsURLConnection) url.openConnection();
             try (
                     InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)

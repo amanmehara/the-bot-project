@@ -19,9 +19,11 @@ import org.json.JSONException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.amanmehara.programming.android.common.Constants.OAUTH;
 import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
 import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
 import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
@@ -29,7 +31,7 @@ import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVI
 public class LanguageActivity extends Activity {
 
     private static final String TAG = LanguageActivity.class.getSimpleName();
-    private static final String LANGUAGES_PATH = "content?ref=master";
+    private static final String LANGUAGES_PATH = "contents?ref=master";
 
     private static final Function<Context,BiConsumer<String,JSONArray>> ON_CLICK_CALLBACK
             = context -> (language, programs) -> {
@@ -56,6 +58,8 @@ public class LanguageActivity extends Activity {
         RecyclerView.LayoutManager languageLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(languageLayoutManager);
 
+        String url = Constants.ENDPOINT + LANGUAGES_PATH + OAUTH;
+
         if (IS_CONNECTED.test(getApplicationContext())) {
             new RestClient(
                     LanguageActivity.this,
@@ -66,7 +70,7 @@ public class LanguageActivity extends Activity {
                             Log.e(TAG,e.getMessage());
                             SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
                         }
-                    }).execute(Constants.ENDPOINT + LANGUAGES_PATH);
+                    }).execute(url+OAUTH);
         } else {
             SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
             Map<String,Serializable> extrasMap = new HashMap<>();
