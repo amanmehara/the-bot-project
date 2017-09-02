@@ -1,6 +1,5 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,9 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.amanmehara.programming.android.activities.enumeration.Activity;
 import com.amanmehara.programming.android.adapters.LanguageAdapter;
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.AppActivity;
 import com.amanmehara.programming.android.common.Constants;
 import com.amanmehara.programming.android.rest.RestClient;
 import org.json.JSONArray;
@@ -19,29 +19,25 @@ import org.json.JSONException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.amanmehara.programming.android.common.Constants.OAUTH;
-import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
-import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
-import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
-public class LanguageActivity extends Activity {
+public class LanguageActivity extends BaseActivity {
 
     private static final String TAG = LanguageActivity.class.getSimpleName();
     private static final String LANGUAGES_PATH = "contents?ref=master";
 
-    private static final Function<Context,BiConsumer<String,JSONArray>> ON_CLICK_CALLBACK
+    private final Function<Context,BiConsumer<String,JSONArray>> ON_CLICK_CALLBACK
             = context -> (language, programs) -> {
         Map<String,Serializable> extrasMap = new HashMap<>();
         extrasMap.put("language",language);
         extrasMap.put("programs",programs.toString());
-        START_ACTIVITY.apply(context,ProgramActivity.class).accept(extrasMap);
+        startActivity(ProgramActivity.class,extrasMap);
     };
 
-    private static final Function<Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
+    private final Function<android.app.Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
             = activity -> (recyclerView, jsonArray) -> {
         LanguageAdapter languageAdapter = new LanguageAdapter(activity,jsonArray,ON_CLICK_CALLBACK);
         recyclerView.setAdapter(languageAdapter);
@@ -51,7 +47,7 @@ public class LanguageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
-        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
+        setActionBar(R.id.my_toolbar,true);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -60,7 +56,7 @@ public class LanguageActivity extends Activity {
 
         String url = Constants.ENDPOINT + LANGUAGES_PATH + OAUTH;
 
-        if (IS_CONNECTED.test(getApplicationContext())) {
+        if (isConnected()) {
             new RestClient(
                     LanguageActivity.this,
                     response -> {
@@ -74,10 +70,8 @@ public class LanguageActivity extends Activity {
         } else {
             SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
             Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("activityInfo",AppActivity.LANGUAGE);
-            START_ACTIVITY
-                    .apply(this,NoConnectionActivity.class)
-                    .accept(extrasMap);
+            extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
+            startActivity(ConnectionActivity.class,extrasMap);
         }
     }
 

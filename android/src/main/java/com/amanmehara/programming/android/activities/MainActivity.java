@@ -1,6 +1,5 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,18 +10,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
-import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
-
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(false);
-
+        setActionBar(R.id.my_toolbar,false);
     }
 
     @Override
@@ -43,8 +37,6 @@ public class MainActivity extends Activity {
 
     public void getStarted(View view) {
         Map<String,Serializable> extrasMap = new HashMap<>();
-        START_ACTIVITY
-                .apply(this,LanguageActivity.class)
-                .accept(extrasMap);
+        startActivity(LanguageActivity.class,extrasMap);
     }
 }

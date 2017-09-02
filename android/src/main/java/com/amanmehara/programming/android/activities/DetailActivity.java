@@ -1,6 +1,5 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +7,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.amanmehara.programming.android.activities.enumeration.Activity;
 import com.amanmehara.programming.android.adapters.DetailAdapter;
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.AppActivity;
 import com.amanmehara.programming.android.rest.RestClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,16 +24,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.amanmehara.programming.android.common.Constants.OAUTH;
-import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
-import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
-import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
 
-public class DetailActivity extends Activity {
+public class DetailActivity extends BaseActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Bundle bundle;
 
-    private static final Function<Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
+    private static final Function<android.app.Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
             = activity -> (recyclerView, jsonArray) -> {
         DetailAdapter detailAdapter = new DetailAdapter(activity,jsonArray);
         recyclerView.setAdapter(detailAdapter);
@@ -48,7 +45,7 @@ public class DetailActivity extends Activity {
         }
     };
 
-    private static final Function<Activity,BiConsumer<Integer,JSONObject>> SET_PROGRAM_NAME
+    private static final Function<android.app.Activity,BiConsumer<Integer,JSONObject>> SET_PROGRAM_NAME
             = activity -> (id, program) -> {
         TextView name = (TextView) activity.findViewById(id);
         try {
@@ -71,7 +68,7 @@ public class DetailActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
+        setActionBar(R.id.my_toolbar,true);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.files_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -84,7 +81,7 @@ public class DetailActivity extends Activity {
 
         if(programOptional.isPresent()) {
             Optional<String> programUrlOptional = OBTAIN_PROGRAM_URL.apply(programOptional.get());
-            if(IS_CONNECTED.test(getApplicationContext()) && programUrlOptional.isPresent()) {
+            if(isConnected() && programUrlOptional.isPresent()) {
                 new RestClient(
                         DetailActivity.this,
                         response -> {
@@ -99,13 +96,11 @@ public class DetailActivity extends Activity {
             } else {
                 SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
                 Map<String,Serializable> extrasMap = new HashMap<>();
-                extrasMap.put("activityInfo", AppActivity.DETAIL);
+                extrasMap.put("enumeration.Activity", Activity.DETAIL);
                 extrasMap.put("language",bundle.getString("language"));
                 extrasMap.put("programs",bundle.getString("programs"));
                 extrasMap.put("program",bundle.getString("program"));
-                START_ACTIVITY
-                        .apply(this,NoConnectionActivity.class)
-                        .accept(extrasMap);
+                startActivity(ConnectionActivity.class,extrasMap);
             }
 
             SET_PROGRAM_NAME.apply(this).accept(R.id.program_name,programOptional.get());
@@ -130,9 +125,7 @@ public class DetailActivity extends Activity {
             Map<String,Serializable> extrasMap = new HashMap<>();
             extrasMap.put("language",bundle.getString("language"));
             extrasMap.put("programs",bundle.getString("programs"));
-            START_ACTIVITY
-                    .apply(this,ProgramActivity.class)
-                    .accept(extrasMap);
+            startActivity(ProgramActivity.class,extrasMap);
         }
         return super.onOptionsItemSelected(item);
     }

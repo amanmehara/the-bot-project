@@ -17,7 +17,7 @@ public enum Language {
     SCALA("Scala"),
     SQL("SQL");
 
-    private String display;
+    private final String display;
 
     Language(String display) {
         this.display = display;

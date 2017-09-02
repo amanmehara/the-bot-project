@@ -20,11 +20,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
-import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
-
-
-public class ProgramActivity extends Activity {
+public class ProgramActivity extends BaseActivity {
 
     private static final String TAG = ProgramActivity.class.getSimpleName();
 
@@ -34,7 +30,7 @@ public class ProgramActivity extends Activity {
         extrasMap.put("language",language);
         extrasMap.put("programs",programs.toString());
         extrasMap.put("program",program.toString());
-        START_ACTIVITY.apply(context,DetailActivity.class).accept(extrasMap);
+        startActivity(DetailActivity.class,extrasMap);
     };
 
     private final BiFunction<Activity,String,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
@@ -47,7 +43,7 @@ public class ProgramActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
-        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
+        setActionBar(R.id.my_toolbar,true);
 
         Bundle bundle = getIntent().getExtras();
 

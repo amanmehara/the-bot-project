@@ -8,7 +8,7 @@ public enum Type {
     FILE("file"),
     DIRECTORY("dir");
 
-    private String value;
+    private final String value;
 
     Type(String value) {
         this.value = value;

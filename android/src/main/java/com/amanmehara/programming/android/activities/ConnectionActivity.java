@@ -1,40 +1,33 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.AppActivity;
+import com.amanmehara.programming.android.activities.enumeration.Activity;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.amanmehara.programming.android.util.ActivityUtils.IS_CONNECTED;
-import static com.amanmehara.programming.android.util.ActivityUtils.SET_ACTION_BAR;
-import static com.amanmehara.programming.android.util.ActivityUtils.START_ACTIVITY;
-
-public class NoConnectionActivity extends Activity {
+public class ConnectionActivity extends BaseActivity {
 
     private Bundle bundle;
-    private AppActivity appActivity;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_no_connection);
-
-        SET_ACTION_BAR.apply(this,R.id.my_toolbar).accept(true);
-
+        setContentView(R.layout.activity_connection);
+        setActionBar(R.id.my_toolbar,true);
         bundle = getIntent().getExtras();
-        appActivity = (AppActivity) bundle.getSerializable("activityInfo");
+        activity = (Activity) bundle.getSerializable("enumeration.Activity");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_no_connection, menu);
+        getMenuInflater().inflate(R.menu.menu_connection, menu);
         return true;
     }
 
@@ -50,41 +43,33 @@ public class NoConnectionActivity extends Activity {
 
     public void tryAgain(View view) {
 
-        if (IS_CONNECTED.test(getApplicationContext())) {
+        if (isConnected()) {
             Map<String,Serializable> extrasMap = new HashMap<>();
-            switch (appActivity) {
+            switch (activity) {
                 case LANGUAGE:
-                    START_ACTIVITY
-                            .apply(this,LanguageActivity.class)
-                            .accept(extrasMap);
+                    startActivity(LanguageActivity.class,extrasMap);
                     break;
                 case DETAIL:
                     extrasMap.put("language",bundle.getString("language"));
                     extrasMap.put("programs",bundle.getString("programs"));
                     extrasMap.put("program",bundle.getString("program"));
-                    START_ACTIVITY
-                            .apply(this,DetailActivity.class)
-                            .accept(extrasMap);
+                    startActivity(DetailActivity.class,extrasMap);
                     break;
                 default:
             }
         } else {
             Map<String,Serializable> extrasMap = new HashMap<>();
-            switch (appActivity) {
+            switch (activity) {
                 case LANGUAGE:
-                    extrasMap.put("activityInfo",AppActivity.LANGUAGE);
-                    START_ACTIVITY
-                            .apply(this,NoConnectionActivity.class)
-                            .accept(extrasMap);
+                    extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
+                    startActivity(ConnectionActivity.class,extrasMap);
                     break;
                 case DETAIL:
-                    extrasMap.put("activityInfo", AppActivity.DETAIL);
+                    extrasMap.put("enumeration.Activity", Activity.DETAIL);
                     extrasMap.put("language",bundle.getString("language"));
                     extrasMap.put("programs",bundle.getString("programs"));
                     extrasMap.put("program",bundle.getString("program"));
-                    START_ACTIVITY
-                            .apply(this,NoConnectionActivity.class)
-                            .accept(extrasMap);
+                    startActivity(ConnectionActivity.class,extrasMap);
                     break;
                 default:
             }
