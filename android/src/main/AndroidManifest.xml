@@ -48,6 +48,10 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.amanmehara.programming.android.activities.MainActivity"/>
         </activity>
+        <activity
+            android:name=".activities.GithubOAuthActivity"
+            android:label="@string/app_name">
+        </activity>
     </application>
 
 </manifest>

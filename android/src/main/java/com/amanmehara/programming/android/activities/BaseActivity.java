@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toolbar;
 
 import java.io.Serializable;
@@ -19,23 +21,31 @@ import java.util.Objects;
 
 public abstract class BaseActivity extends Activity {
 
-    public void setActionBar(int id, boolean homeAsUp) {
-        setActionBar((Toolbar)findViewById(id));
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(homeAsUp);
-    }
-
-    public boolean isConnected() {
+    protected boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return Objects.nonNull(activeNetworkInfo) && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    public void startActivity(Class<? extends BaseActivity> clazz) {
+    protected void setActionBar(int id, boolean homeAsUp) {
+        setActionBar((Toolbar)findViewById(id));
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(homeAsUp);
+    }
+
+    protected RecyclerView setRecyclerView(int id) {
+        RecyclerView recyclerView = (RecyclerView) findViewById(id);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        return recyclerView;
+    }
+
+    protected void startActivity(Class<? extends BaseActivity> clazz) {
         startActivity(clazz, Collections.emptyMap());
     }
 
-    public void startActivity(Class<? extends BaseActivity> clazz, Map<String,Serializable> extrasMap) {
+    protected void startActivity(Class<? extends BaseActivity> clazz, Map<String,Serializable> extrasMap) {
         Intent intent = new Intent(this,clazz);
         extrasMap.forEach(intent::putExtra);
         startActivity(intent);

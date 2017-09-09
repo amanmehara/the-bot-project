@@ -15,23 +15,21 @@ import org.json.JSONObject;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHolder> {
 
     private static final String TAG = ProgramAdapter.class.getSimpleName();
     private final Activity activity;
-    private final String language;
     private final JSONArray programs;
-    private final BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> onClickCallback;
+    private final Consumer<JSONObject> onClickCallback;
 
     public ProgramAdapter(
             Activity activity,
-            String language,
             JSONArray programs,
-            BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> onClickCallback
+            Consumer<JSONObject> onClickCallback
     ) {
         this.activity = activity;
-        this.language = language;
         this.programs = programs;
         this.onClickCallback = onClickCallback;
     }
@@ -71,9 +69,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
         @Override
         public void onClick(View v) {
             try {
-                onClickCallback
-                        .apply(activity.getApplicationContext(),programs)
-                        .accept(language,programs.getJSONObject(getLayoutPosition()));
+                onClickCallback.accept(programs.getJSONObject(getLayoutPosition()));
             } catch (Exception e) {
                 Log.e(TAG,e.getMessage());
             }

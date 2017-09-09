@@ -9,7 +9,4 @@ public class Constants {
     private static final String REPOSITORY = "programming-app-data";
     public static final String ENDPOINT = String.format("https://api.github.com/repos/%s/%s/",USERNAME,REPOSITORY);
 
-    //Todo: Remove once integrated with firebase
-    public static final String OAUTH = "";
-
 }

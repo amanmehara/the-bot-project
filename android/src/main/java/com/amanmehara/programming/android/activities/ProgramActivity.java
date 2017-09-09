@@ -1,9 +1,6 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -17,47 +14,34 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class ProgramActivity extends BaseActivity {
 
     private static final String TAG = ProgramActivity.class.getSimpleName();
-
-    private final BiFunction<Context,JSONArray,BiConsumer<String,JSONObject>> ON_CLICK_CALLBACK
-            = (context, programs) -> (language, program) -> {
-        Map<String,Serializable> extrasMap = new HashMap<>();
-        extrasMap.put("language",language);
-        extrasMap.put("programs",programs.toString());
-        extrasMap.put("program",program.toString());
-        startActivity(DetailActivity.class,extrasMap);
-    };
-
-    private final BiFunction<Activity,String,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
-            = (activity,language) -> (recyclerView, jsonArray) -> {
-        ProgramAdapter programsAdapter = new ProgramAdapter(activity,language,jsonArray,ON_CLICK_CALLBACK);
-        recyclerView.setAdapter(programsAdapter);
-    };
+    private String accessToken;
+    private String languageName;
+    private String programsJson;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_programs);
         setActionBar(R.id.my_toolbar,true);
+        recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.programs_recycler_view);
-        recyclerView.setHasFixedSize(true);
-
-        RecyclerView.LayoutManager programsLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(programsLayoutManager);
+        accessToken = bundle.getString("accessToken");
+        languageName = bundle.getString("languageName");
+        programsJson = bundle.getString("programs");
 
         try {
-            SET_ADAPTER.apply(this,bundle.getString("language")).accept(recyclerView,new JSONArray(bundle.getString("programs")));
+            setAdapter(new JSONArray(programsJson));
         } catch (JSONException e) {
             Log.e(TAG,e.getMessage());
-            SET_ADAPTER.apply(this,bundle.getString("language")).accept(recyclerView,new JSONArray());
+            setAdapter();
         }
 
     }
@@ -77,6 +61,26 @@ public class ProgramActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Consumer<JSONObject> getOnClickCallback() {
+        return program -> {
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken",accessToken);
+            extrasMap.put("languageName",languageName);
+            extrasMap.put("programs",programsJson);
+            extrasMap.put("program",program.toString());
+            startActivity(DetailActivity.class,extrasMap);
+        };
+    }
+
+    private void setAdapter() {
+        setAdapter(new JSONArray());
+    }
+
+    private void setAdapter(JSONArray programs) {
+        ProgramAdapter programAdapter = new ProgramAdapter(this,programs,getOnClickCallback());
+        recyclerView.setAdapter(programAdapter);
     }
 
 }

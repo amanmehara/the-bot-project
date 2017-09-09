@@ -1,8 +1,6 @@
 package com.amanmehara.programming.android.activities;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -12,66 +10,46 @@ import com.amanmehara.programming.android.activities.enumeration.Activity;
 import com.amanmehara.programming.android.adapters.LanguageAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.Constants;
-import com.amanmehara.programming.android.rest.RestClient;
+import com.amanmehara.programming.android.common.Type;
+import com.amanmehara.programming.android.rest.GithubAPIClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-import static com.amanmehara.programming.android.common.Constants.OAUTH;
+import java.util.function.Consumer;
 
 public class LanguageActivity extends BaseActivity {
 
     private static final String TAG = LanguageActivity.class.getSimpleName();
     private static final String LANGUAGES_PATH = "contents?ref=master";
-
-    private final Function<Context,BiConsumer<String,JSONArray>> ON_CLICK_CALLBACK
-            = context -> (language, programs) -> {
-        Map<String,Serializable> extrasMap = new HashMap<>();
-        extrasMap.put("language",language);
-        extrasMap.put("programs",programs.toString());
-        startActivity(ProgramActivity.class,extrasMap);
-    };
-
-    private final Function<android.app.Activity,BiConsumer<RecyclerView,JSONArray>> SET_ADAPTER
-            = activity -> (recyclerView, jsonArray) -> {
-        LanguageAdapter languageAdapter = new LanguageAdapter(activity,jsonArray,ON_CLICK_CALLBACK);
-        recyclerView.setAdapter(languageAdapter);
-    };
+    private String accessToken;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_language);
         setActionBar(R.id.my_toolbar,true);
+        recyclerView = setRecyclerView(R.id.language_recycler_view);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.language_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager languageLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(languageLayoutManager);
-
-        String url = Constants.ENDPOINT + LANGUAGES_PATH + OAUTH;
+        Bundle bundle = getIntent().getExtras();
+        accessToken = bundle.getString("accessToken");
+        String url = Constants.ENDPOINT + LANGUAGES_PATH + "&access_token=" + accessToken;
 
         if (isConnected()) {
-            new RestClient(
-                    LanguageActivity.this,
-                    response -> {
-                        try {
-                            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray(response));
-                        } catch (JSONException e) {
-                            Log.e(TAG,e.getMessage());
-                            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
-                        }
-                    }).execute(url+OAUTH);
+            new GithubAPIClient(this, getResponseCallback()).execute(url);
         } else {
-            SET_ADAPTER.apply(this).accept(recyclerView,new JSONArray());
+            setAdapter();
             Map<String,Serializable> extrasMap = new HashMap<>();
             extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
-            startActivity(ConnectionActivity.class,extrasMap);
+            extrasMap.put("accessToken", accessToken);
+            startActivity(ConnectionActivity.class, extrasMap);
         }
     }
 
@@ -90,6 +68,50 @@ public class LanguageActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private JSONArray filterLanguages(JSONArray languages) {
+        JSONArray filtered = new JSONArray();
+        for(int i = 0; i < languages.length(); i++) {
+            JSONObject language = languages.optJSONObject(i);
+            if(Objects.nonNull(language)) {
+                String type = language.optString("type");
+                if(Objects.nonNull(type) && type.equals(Type.DIRECTORY.getValue())) {
+                    filtered.put(language);
+                }
+            }
+        }
+        return filtered;
+    }
+
+    private BiConsumer<String,JSONArray> getOnClickCallback() {
+        return (languageName, programs) -> {
+            Map<String,Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken",accessToken);
+            extrasMap.put("languageName",languageName);
+            extrasMap.put("programs",programs.toString());
+            startActivity(ProgramActivity.class,extrasMap);
+        };
+    }
+
+    private Consumer<String> getResponseCallback() {
+        return response -> {
+            try {
+                setAdapter(new JSONArray(response));
+            } catch (JSONException e) {
+                Log.e(TAG,e.getMessage());
+                setAdapter();
+            }
+        };
+    }
+
+    private void setAdapter() {
+        setAdapter(new JSONArray());
+    }
+
+    private void setAdapter(JSONArray languages) {
+        LanguageAdapter languageAdapter = new LanguageAdapter(accessToken,this,filterLanguages(languages),getOnClickCallback());
+        recyclerView.setAdapter(languageAdapter);
     }
 
 }

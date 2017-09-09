@@ -19,17 +19,14 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by @amanmehara on 20-06-2017.
  */
-public class RestClient extends AsyncTask<String,Integer,String> {
+public class GithubAPIClient extends AsyncTask<String,Integer,String> {
 
-    private static final String TAG = RestClient.class.getSimpleName();
+    private static final String TAG = GithubAPIClient.class.getSimpleName();
     private final Consumer<String> callback;
     private final ProgressBar progressBar;
     private String response;
 
-    public RestClient(
-            Activity activity,
-            Consumer<String> callback
-    ) {
+    public GithubAPIClient(Activity activity, Consumer<String> callback) {
         this.callback = callback;
         this.progressBar = (ProgressBar) activity.findViewById(R.id.my_progressbar);
     }
@@ -44,9 +41,9 @@ public class RestClient extends AsyncTask<String,Integer,String> {
     protected String doInBackground(String... params) {
         try {
             URL url = new URL(params[0]);
-            HttpsURLConnection httpURLConnection = (HttpsURLConnection) url.openConnection();
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             try (
-                    InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
+                    InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream());
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
             ) {
                 response = bufferedReader.lines()

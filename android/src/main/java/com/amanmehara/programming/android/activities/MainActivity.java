@@ -6,10 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import com.amanmehara.programming.android.R;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MainActivity extends BaseActivity {
 
     @Override
@@ -36,7 +32,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void getStarted(View view) {
-        Map<String,Serializable> extrasMap = new HashMap<>();
-        startActivity(LanguageActivity.class,extrasMap);
+        startActivity(GithubOAuthActivity.class);
     }
+
 }

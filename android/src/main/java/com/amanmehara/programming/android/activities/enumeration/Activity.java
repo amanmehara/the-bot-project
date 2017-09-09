@@ -3,6 +3,7 @@ package com.amanmehara.programming.android.activities.enumeration;
 import com.amanmehara.programming.android.activities.BaseActivity;
 import com.amanmehara.programming.android.activities.ConnectionActivity;
 import com.amanmehara.programming.android.activities.DetailActivity;
+import com.amanmehara.programming.android.activities.GithubOAuthActivity;
 import com.amanmehara.programming.android.activities.LanguageActivity;
 import com.amanmehara.programming.android.activities.MainActivity;
 import com.amanmehara.programming.android.activities.ProgramActivity;
@@ -14,6 +15,7 @@ public enum Activity {
 
     CONNECTION(ConnectionActivity.class),
     DETAIL(DetailActivity.class),
+    GITHUB(GithubOAuthActivity.class),
     LANGUAGE(LanguageActivity.class),
     MAIN(MainActivity.class),
     PROGRAM(ProgramActivity.class);

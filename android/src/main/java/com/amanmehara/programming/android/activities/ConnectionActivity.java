@@ -46,29 +46,40 @@ public class ConnectionActivity extends BaseActivity {
         if (isConnected()) {
             Map<String,Serializable> extrasMap = new HashMap<>();
             switch (activity) {
-                case LANGUAGE:
-                    startActivity(LanguageActivity.class,extrasMap);
-                    break;
                 case DETAIL:
-                    extrasMap.put("language",bundle.getString("language"));
+                    extrasMap.put("accessToken",bundle.getString("accessToken"));
+                    extrasMap.put("languageName",bundle.getString("languageName"));
                     extrasMap.put("programs",bundle.getString("programs"));
                     extrasMap.put("program",bundle.getString("program"));
                     startActivity(DetailActivity.class,extrasMap);
+                    break;
+                case GITHUB:
+                    startActivity(GithubOAuthActivity.class);
+                    break;
+                case LANGUAGE:
+                    extrasMap.put("accessToken",bundle.getString("accessToken"));
+                    startActivity(LanguageActivity.class,extrasMap);
                     break;
                 default:
             }
         } else {
             Map<String,Serializable> extrasMap = new HashMap<>();
             switch (activity) {
-                case LANGUAGE:
-                    extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
-                    startActivity(ConnectionActivity.class,extrasMap);
-                    break;
                 case DETAIL:
                     extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                    extrasMap.put("language",bundle.getString("language"));
+                    extrasMap.put("accessToken",bundle.getString("accessToken"));
+                    extrasMap.put("languageName",bundle.getString("languageName"));
                     extrasMap.put("programs",bundle.getString("programs"));
                     extrasMap.put("program",bundle.getString("program"));
+                    startActivity(ConnectionActivity.class,extrasMap);
+                    break;
+                case GITHUB:
+                    extrasMap.put("enumeration.Activity", Activity.GITHUB);
+                    startActivity(ConnectionActivity.class,extrasMap);
+                    break;
+                case LANGUAGE:
+                    extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
+                    extrasMap.put("accessToken",bundle.getString("accessToken"));
                     startActivity(ConnectionActivity.class,extrasMap);
                     break;
                 default:
@@ -76,4 +87,5 @@ public class ConnectionActivity extends BaseActivity {
         }
 
     }
+
 }
