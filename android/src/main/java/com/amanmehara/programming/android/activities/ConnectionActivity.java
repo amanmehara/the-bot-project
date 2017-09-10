@@ -20,7 +20,7 @@ public class ConnectionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        setActionBar(R.id.my_toolbar,true);
+        setActionBar(R.id.toolbar,true);
         bundle = getIntent().getExtras();
         activity = (Activity) bundle.getSerializable("enumeration.Activity");
     }

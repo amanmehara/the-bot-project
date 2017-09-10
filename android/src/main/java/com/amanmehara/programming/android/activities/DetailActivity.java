@@ -25,6 +25,7 @@ public class DetailActivity extends BaseActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Bundle bundle;
     private String accessToken;
+    private String languageName;
     private RecyclerView recyclerView;
 
     @Override
@@ -32,11 +33,12 @@ public class DetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
-        setActionBar(R.id.my_toolbar,true);
+        setActionBar(R.id.toolbar,true);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
         bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
+        languageName = bundle.getString("languageName");
 
         try {
             if(isConnected()) {
@@ -48,7 +50,7 @@ public class DetailActivity extends BaseActivity {
                 setAdapter();
                 Map<String,Serializable> extrasMap = new HashMap<>();
                 extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                extrasMap.put("languageName",bundle.getString("languageName"));
+                extrasMap.put("languageName",languageName);
                 extrasMap.put("programs",bundle.getString("programs"));
                 extrasMap.put("program",bundle.getString("program"));
                 startActivity(ConnectionActivity.class,extrasMap);
@@ -75,7 +77,7 @@ public class DetailActivity extends BaseActivity {
         }
         if (id == android.R.id.home) {
             Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("languageName",bundle.getString("languageName"));
+            extrasMap.put("languageName",languageName);
             extrasMap.put("programs",bundle.getString("programs"));
             startActivity(ProgramActivity.class,extrasMap);
         }
@@ -98,7 +100,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programContents) {
-        DetailAdapter detailAdapter = new DetailAdapter(accessToken,this,programContents);
+        DetailAdapter detailAdapter = new DetailAdapter(accessToken,this,languageName,programContents);
         recyclerView.setAdapter(detailAdapter);
     }
 

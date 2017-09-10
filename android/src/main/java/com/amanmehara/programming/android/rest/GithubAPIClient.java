@@ -28,7 +28,7 @@ public class GithubAPIClient extends AsyncTask<String,Integer,String> {
 
     public GithubAPIClient(Activity activity, Consumer<String> callback) {
         this.callback = callback;
-        this.progressBar = (ProgressBar) activity.findViewById(R.id.my_progressbar);
+        this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar);
     }
 
     @Override

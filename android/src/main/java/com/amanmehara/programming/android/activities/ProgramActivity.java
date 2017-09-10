@@ -29,7 +29,7 @@ public class ProgramActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_programs);
-        setActionBar(R.id.my_toolbar,true);
+        setActionBar(R.id.toolbar,true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
