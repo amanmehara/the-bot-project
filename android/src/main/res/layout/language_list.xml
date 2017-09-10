@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -8,9 +9,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_marginTop="8dp"
         card_view:cardCornerRadius="4dp">
 
         <LinearLayout android:id="@+id/language_info"
@@ -18,12 +18,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="?android:attr/selectableItemBackground"
-            android:padding="8sp">
+            android:padding="8dp">
+
             <ImageView android:id="@+id/language_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:layout_gravity="center_vertical"/>
+
             <TextView
                 android:id="@+id/language_name"
                 android:layout_width="0dp"
@@ -31,19 +33,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:textSize="24sp"
-                android:paddingLeft="8sp"/>
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
 
             <TextView android:id="@+id/language_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:gravity="right"
+                android:gravity="end"
                 android:textSize="48sp"
                 android:textColor="@color/primary_light"
-                android:layout_gravity="center_vertical"
-                android:text="999"/>
+                android:layout_gravity="center_vertical"/>
+
         </LinearLayout>
 
-
     </android.support.v7.widget.CardView>
+
 </LinearLayout>
