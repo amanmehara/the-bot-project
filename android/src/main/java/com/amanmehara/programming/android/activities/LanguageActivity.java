@@ -35,7 +35,7 @@ public class LanguageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_language);
-        setActionBar(R.id.toolbar,true);
+        setActionBar(R.id.toolbar);
         recyclerView = setRecyclerView(R.id.language_recycler_view);
 
         Bundle bundle = getIntent().getExtras();

@@ -1,7 +1,12 @@
 package com.amanmehara.programming.android.rest;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import com.amanmehara.programming.android.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,10 +27,18 @@ public class GithubOAuthClient extends AsyncTask<String,Integer,String> {
     private static final String TAG = GithubOAuthClient.class.getSimpleName();
     private static final String URL = "https://github.com/login/oauth/access_token";
     private Consumer<String> callback;
+    private final ProgressBar progressBar;
     private String response;
 
-    public GithubOAuthClient(Consumer<String> callback) {
+    public GithubOAuthClient(Activity activity, Consumer<String> callback) {
         this.callback = callback;
+        this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -56,8 +69,15 @@ public class GithubOAuthClient extends AsyncTask<String,Integer,String> {
     }
 
     @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+        progressBar.setProgress(values[0]);
+    }
+
+    @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
+        progressBar.setVisibility(View.GONE);
         callback.accept(response);
     }
 

@@ -8,6 +8,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.activities.enumeration.Activity;
 import com.amanmehara.programming.android.rest.GithubOAuthClient;
 
@@ -29,15 +30,13 @@ public class GithubOAuthActivity extends BaseActivity {
     private static final String REDIRECT_URI = "##";
     private WebView webView;
 
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        webView = new WebView(this);
+        setContentView(R.layout.activity_githuboauth);
+        webView = (WebView) findViewById(R.id.authentication);
         webView.getSettings().setJavaScriptEnabled(true);
-        setContentView(webView);
 
         if(isConnected()) {
             overrideUrlLoading();
@@ -51,7 +50,7 @@ public class GithubOAuthActivity extends BaseActivity {
     }
 
     private void overrideUrlLoading() {
-
+        android.app.Activity activity = this;
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -60,7 +59,7 @@ public class GithubOAuthActivity extends BaseActivity {
                     String code = uri.getQueryParameter("code");
                     String state = uri.getQueryParameter("state");
                     String urlEncodedFormData = String.format("client_id=%s&client_secret=%s&code=%s",CLIENT_ID,CLIENT_SECRET,code);
-                    new GithubOAuthClient(getResponseCallback()).execute(urlEncodedFormData);
+                    new GithubOAuthClient(activity,getResponseCallback()).execute(urlEncodedFormData);
                 }
                 return super.shouldOverrideUrlLoading(view, request);
             }

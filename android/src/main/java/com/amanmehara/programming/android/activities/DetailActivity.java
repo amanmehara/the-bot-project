@@ -33,7 +33,7 @@ public class DetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
-        setActionBar(R.id.toolbar,true);
+        setActionBar(R.id.toolbar);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
         bundle = getIntent().getExtras();

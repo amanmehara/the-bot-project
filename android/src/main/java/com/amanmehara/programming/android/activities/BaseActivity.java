@@ -27,10 +27,8 @@ public abstract class BaseActivity extends Activity {
         return Objects.nonNull(activeNetworkInfo) && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    protected void setActionBar(int id, boolean homeAsUp) {
+    protected void setActionBar(int id) {
         setActionBar((Toolbar)findViewById(id));
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(homeAsUp);
     }
 
     protected RecyclerView setRecyclerView(int id) {
