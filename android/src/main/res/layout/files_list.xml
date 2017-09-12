@@ -24,8 +24,14 @@
                 android:layout_gravity="center"
                 android:gravity="start"
                 android:textSize="18sp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"/>
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"/>
 
             <WebView
                 android:id="@+id/file_content"
