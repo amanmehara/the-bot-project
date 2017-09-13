@@ -19,6 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
@@ -28,7 +31,7 @@ import static com.amanmehara.programming.android.common.Type.FILE;
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
     private static final String TAG = LanguageAdapter.class.getSimpleName();
-    private static final SparseArray<JSONArray> programs = new SparseArray<>();
+    private final Map<String,Map<String,Object>> cache = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final JSONArray languages;
@@ -56,9 +59,18 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
         try {
             JSONObject programs = languages.getJSONObject(i);
-            String url = programs.getString("url") + "&access_token=" + accessToken;
-            fetchPrograms(viewHolder,url,i);
-            viewHolder.languageNameView.setText(mapLanguageName(programs.getString("name")));
+            String url = programs.getString("url");
+            if(cache.containsKey(url)) {
+                viewHolder.languageCountView.setText((String) cache.get(url).get("programCount"));
+                viewHolder.languageImageView.setImageBitmap((Bitmap) cache.get(url).get("languageIcon"));
+                viewHolder.languageNameView.setText((String) cache.get(url).get("languageName"));
+            } else {
+                cache.put(url,new HashMap<>());
+                fetchPrograms(viewHolder,url);
+                String languageName = mapLanguageName(programs.getString("name"));
+                viewHolder.languageNameView.setText(languageName);
+                cache.get(url).put("languageName",languageName);
+            }
         } catch (JSONException e) {
             Log.e(TAG,e.getMessage());
         }
@@ -69,17 +81,19 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         return languages.length();
     }
 
-    private void fetchPrograms(ViewHolder viewHolder, String url, int position) {
+    private void fetchPrograms(ViewHolder viewHolder, String url) {
         new GithubAPIClient(activity, response -> {
             try {
-                programs.append(position,new JSONArray(response));
+                JSONArray programs = new JSONArray(response);
+                cache.get(url).put("programs",programs);
+                Integer programCount = getProgramCount(programs);
+                cache.get(url).put("programCount",String.valueOf(programCount));
+                viewHolder.languageCountView.setText(String.valueOf(programCount));
+                setLanguageLogo(viewHolder,programs,url);
             } catch (JSONException e) {
                 Log.e(TAG,e.getMessage());
-                programs.append(position,new JSONArray());
             }
-            viewHolder.languageCountView.setText(String.valueOf(getProgramCount(programs.get(position))));
-            setLanguageLogo(viewHolder,programs.get(position));
-        }).execute(url);
+        }).execute(withAccessToken(url));
     }
 
     private int getProgramCount(JSONArray programs) {
@@ -104,7 +118,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 .orElse(name);
     }
 
-    private void setLanguageLogo(ViewHolder viewHolder, JSONArray programs) {
+    private void setLanguageLogo(ViewHolder viewHolder, JSONArray programs, String key) {
         for(int i=0; i<programs.length(); i++) {
             try {
                 JSONObject jsonObject = programs.getJSONObject(i);
@@ -117,6 +131,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                             int imageBlobLength = imageBlob.length;
                             Bitmap logo = BitmapFactory.decodeByteArray(imageBlob,0,imageBlobLength);
                             viewHolder.languageImageView.setImageBitmap(logo);
+                            cache.get(key).put("languageIcon",logo);
                         } catch (JSONException e) {
                             Log.e(TAG,e.getMessage());
                             viewHolder.languageImageView.setImageResource(R.drawable.ic_circle_logo);
@@ -128,6 +143,10 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 viewHolder.languageImageView.setImageResource(R.drawable.ic_circle_logo);
             }
         }
+    }
+
+    private String withAccessToken(String url) {
+        return url + "&access_token=" + accessToken;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -148,8 +167,10 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         public void onClick(View v) {
             int layoutPosition = getLayoutPosition();
             try {
-                String languageName = mapLanguageName(languages.getJSONObject(layoutPosition).getString("name"));
-                onClickCallback.accept(languageName,programs.get(layoutPosition));
+                JSONObject language = languages.getJSONObject(layoutPosition);
+                String languageName = mapLanguageName(language.getString("name"));
+                String url = language.getString("url");
+                onClickCallback.accept(languageName,(JSONArray) cache.get(url).get("programs"));
             } catch (JSONException e) {
                 Log.e(TAG,e.getMessage());
             }
