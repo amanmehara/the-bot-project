@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -65,7 +63,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 viewHolder.languageImageView.setImageBitmap((Bitmap) cache.get(url).get("languageIcon"));
                 viewHolder.languageNameView.setText((String) cache.get(url).get("languageName"));
             } else {
-                cache.put(url,new HashMap<>());
+                cache.put(url,new ConcurrentHashMap<>());
                 fetchPrograms(viewHolder,url);
                 String languageName = mapLanguageName(programs.getString("name"));
                 viewHolder.languageNameView.setText(languageName);

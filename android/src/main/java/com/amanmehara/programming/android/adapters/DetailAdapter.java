@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.FILE;
@@ -28,12 +29,11 @@ import static com.amanmehara.programming.android.common.Type.FILE;
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
 
     private static final String TAG = DetailAdapter.class.getSimpleName();
-    private static final SparseArray<JSONObject> resolvedContents = new SparseArray<>();
+    private final Map<String,Map<String,Object>> cache = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final String languageName;
     private final JSONArray programContents;
-
 
     public DetailAdapter(
             String accessToken,
@@ -54,13 +54,22 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
-    public void onBindViewHolder(DetailAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        WebSettings webSettings = viewHolder.fileContentView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
         try {
             JSONObject jsonObject = programContents.getJSONObject(i);
-            String url = jsonObject.getString("url") + "&access_token=" + accessToken;
-            resolveContent(viewHolder,url,i);
-            viewHolder.mTextView.setText(jsonObject.getString("name"));
+            viewHolder.fileNameView.setText(jsonObject.getString("name"));
+            String url = jsonObject.getString("url");
+            if(cache.containsKey(url)) {
+                String html = (String) cache.get(url).get("html");
+                viewHolder.fileContentView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+            } else {
+                cache.put(url,new ConcurrentHashMap<>());
+                resolveContent(viewHolder,url);
+            }
         } catch (JSONException e) {
             Log.e(TAG,e.getMessage());
         }
@@ -69,18 +78,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return programContents.length();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView mTextView;
-        private WebView mWebView;
-
-        private ViewHolder(View v) {
-            super(v);
-            mTextView = (TextView) v.findViewById(R.id.file_name);
-            mWebView = (WebView) v.findViewById(R.id.file_content);
-        }
     }
 
     private String decodeContent(String content) {
@@ -102,21 +99,20 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "</html>";
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private void resolveContent(ViewHolder viewHolder, String url, int position) {
+    private void resolveContent(ViewHolder viewHolder, String url) {
         new GithubAPIClient(activity, response -> {
             try {
-                resolvedContents.append(position,new JSONObject(response));
-                if(resolvedContents.get(position).getString("type").equals(FILE.getValue())) {
-                    String html = generateHtml(decodeContent(resolvedContents.get(position).getString("content")));
-                    viewHolder.mWebView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+                JSONObject resolvedContent = new JSONObject(response);
+                if(resolvedContent.getString("type").equals(FILE.getValue())) {
+                    cache.get(url).put("resolvedContent",resolvedContent);
+                    String html = generateHtml(decodeContent(resolvedContent.getString("content")));
+                    cache.get(url).put("html",html);
+                    viewHolder.fileContentView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
                 }
-                WebSettings webSettings = viewHolder.mWebView.getSettings();
-                webSettings.setJavaScriptEnabled(true);
             } catch (JSONException e) {
                 Log.e(TAG,e.getMessage());
             }
-        }).execute(url);
+        }).execute(withAccessToken(url));
     }
 
     private String reverseMapLanguageName(String name) {
@@ -126,6 +122,22 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 .map(Enum::name)
                 .map(String::toLowerCase)
                 .orElse(name);
+    }
+
+    private String withAccessToken(String url) {
+        return url + "&access_token=" + accessToken;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView fileNameView;
+        private WebView fileContentView;
+
+        private ViewHolder(View v) {
+            super(v);
+            fileNameView = (TextView) v.findViewById(R.id.file_name);
+            fileContentView = (WebView) v.findViewById(R.id.file_content);
+        }
     }
 
 }

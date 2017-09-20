@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
+import com.amanmehara.programming.android.common.Type;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +16,9 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class ProgramActivity extends BaseActivity {
 
@@ -63,6 +67,25 @@ public class ProgramActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private boolean exclusion(String name) {
+        return Stream.of("icon.png").anyMatch(name::equals);
+    }
+
+    private JSONArray filterPrograms(JSONArray programs) {
+        JSONArray filtered = new JSONArray();
+        for(int i = 0; i < programs.length(); i++) {
+            JSONObject program = programs.optJSONObject(i);
+            if(Objects.nonNull(program)) {
+                String name = program.optString("name");
+                String type = program.optString("type");
+                if(type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
+                    filtered.put(program);
+                }
+            }
+        }
+        return filtered;
+    }
+
     private Consumer<JSONObject> getOnClickCallback() {
         return program -> {
             Map<String,Serializable> extrasMap = new HashMap<>();
@@ -79,7 +102,7 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programs) {
-        ProgramAdapter programAdapter = new ProgramAdapter(this,programs,getOnClickCallback());
+        ProgramAdapter programAdapter = new ProgramAdapter(this,filterPrograms(programs),getOnClickCallback());
         recyclerView.setAdapter(programAdapter);
     }
 

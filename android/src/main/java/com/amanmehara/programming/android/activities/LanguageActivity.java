@@ -76,7 +76,7 @@ public class LanguageActivity extends BaseActivity {
             JSONObject language = languages.optJSONObject(i);
             if(Objects.nonNull(language)) {
                 String type = language.optString("type");
-                if(Objects.nonNull(type) && type.equals(Type.DIRECTORY.getValue())) {
+                if(type.equals(Type.DIRECTORY.getValue())) {
                     filtered.put(language);
                 }
             }
