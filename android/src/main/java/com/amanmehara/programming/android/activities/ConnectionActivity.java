@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.activities.enumeration.Activity;
 
@@ -20,7 +21,7 @@ public class ConnectionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         bundle = getIntent().getExtras();
         activity = (Activity) bundle.getSerializable("enumeration.Activity");
     }
@@ -34,53 +35,61 @@ public class ConnectionActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                startActivity(MainActivity.class);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void tryAgain(View view) {
 
         if (isConnected()) {
-            Map<String,Serializable> extrasMap = new HashMap<>();
+            Map<String, Serializable> extrasMap = new HashMap<>();
             switch (activity) {
                 case DETAIL:
-                    extrasMap.put("accessToken",bundle.getString("accessToken"));
-                    extrasMap.put("languageName",bundle.getString("languageName"));
-                    extrasMap.put("programs",bundle.getString("programs"));
-                    extrasMap.put("program",bundle.getString("program"));
-                    startActivity(DetailActivity.class,extrasMap);
+                    extrasMap.put("accessToken", bundle.getString("accessToken"));
+                    extrasMap.put("languageName", bundle.getString("languageName"));
+                    extrasMap.put("programs", bundle.getString("programs"));
+                    extrasMap.put("program", bundle.getString("program"));
+                    startActivity(DetailActivity.class, extrasMap);
                     break;
                 case GITHUB:
                     startActivity(GithubOAuthActivity.class);
                     break;
                 case LANGUAGE:
-                    extrasMap.put("accessToken",bundle.getString("accessToken"));
-                    startActivity(LanguageActivity.class,extrasMap);
+                    extrasMap.put("accessToken", bundle.getString("accessToken"));
+                    startActivity(LanguageActivity.class, extrasMap);
                     break;
                 default:
             }
         } else {
-            Map<String,Serializable> extrasMap = new HashMap<>();
+            Map<String, Serializable> extrasMap = new HashMap<>();
             switch (activity) {
                 case DETAIL:
                     extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                    extrasMap.put("accessToken",bundle.getString("accessToken"));
-                    extrasMap.put("languageName",bundle.getString("languageName"));
-                    extrasMap.put("programs",bundle.getString("programs"));
-                    extrasMap.put("program",bundle.getString("program"));
-                    startActivity(ConnectionActivity.class,extrasMap);
+                    extrasMap.put("accessToken", bundle.getString("accessToken"));
+                    extrasMap.put("languageName", bundle.getString("languageName"));
+                    extrasMap.put("programs", bundle.getString("programs"));
+                    extrasMap.put("program", bundle.getString("program"));
+                    startActivity(ConnectionActivity.class, extrasMap);
                     break;
                 case GITHUB:
                     extrasMap.put("enumeration.Activity", Activity.GITHUB);
-                    startActivity(ConnectionActivity.class,extrasMap);
+                    startActivity(ConnectionActivity.class, extrasMap);
                     break;
                 case LANGUAGE:
                     extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
-                    extrasMap.put("accessToken",bundle.getString("accessToken"));
-                    startActivity(ConnectionActivity.class,extrasMap);
+                    extrasMap.put("accessToken", bundle.getString("accessToken"));
+                    startActivity(ConnectionActivity.class, extrasMap);
                     break;
                 default:
             }

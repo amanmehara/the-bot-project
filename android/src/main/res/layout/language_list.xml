@@ -2,9 +2,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -13,37 +13,40 @@
         android:background="?android:attr/selectableItemBackground"
         card_view:cardCornerRadius="4dp">
 
-        <LinearLayout android:id="@+id/language_info"
+        <LinearLayout
+            android:id="@+id/language_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:background="?android:attr/selectableItemBackground"
+            android:orientation="horizontal"
             android:padding="8dp">
 
-            <ImageView android:id="@+id/language_image"
+            <ImageView
+                android:id="@+id/language_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.25" />
 
             <TextView
                 android:id="@+id/language_name"
                 android:layout_width="0dp"
-                android:layout_weight="0.45"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="24sp"
+                android:layout_weight="0.45"
+                android:paddingEnd="8dp"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp"/>
+                android:textSize="24sp" />
 
-            <TextView android:id="@+id/language_count"
+            <TextView
+                android:id="@+id/language_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="0.3"
                 android:gravity="end"
-                android:textSize="48sp"
                 android:textColor="@color/primary_light"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="48sp" />
 
         </LinearLayout>
 

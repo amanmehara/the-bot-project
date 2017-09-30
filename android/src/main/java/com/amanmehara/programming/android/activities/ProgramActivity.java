@@ -1,12 +1,18 @@
 package com.amanmehara.programming.android.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
+import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.common.Type;
 
 import org.json.JSONArray;
@@ -26,25 +32,28 @@ public class ProgramActivity extends BaseActivity {
     private String accessToken;
     private String languageName;
     private String programsJson;
+    private byte[] logoBlob;
     private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_programs);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
         programsJson = bundle.getString("programs");
+        logoBlob = bundle.getByteArray("logoBlob");
+
+        setLanguageDatails();
 
         try {
             setAdapter(new JSONArray(programsJson));
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
             setAdapter();
         }
 
@@ -60,11 +69,21 @@ public class ProgramActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                Map<String, Serializable> extrasMap = new HashMap<>();
+                extrasMap.put("accessToken", accessToken);
+                startActivity(LanguageActivity.class, extrasMap);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private boolean exclusion(String name) {
@@ -73,12 +92,12 @@ public class ProgramActivity extends BaseActivity {
 
     private JSONArray filterPrograms(JSONArray programs) {
         JSONArray filtered = new JSONArray();
-        for(int i = 0; i < programs.length(); i++) {
+        for (int i = 0; i < programs.length(); i++) {
             JSONObject program = programs.optJSONObject(i);
-            if(Objects.nonNull(program)) {
+            if (Objects.nonNull(program)) {
                 String name = program.optString("name");
                 String type = program.optString("type");
-                if(type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
+                if (type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
                     filtered.put(program);
                 }
             }
@@ -88,12 +107,13 @@ public class ProgramActivity extends BaseActivity {
 
     private Consumer<JSONObject> getOnClickCallback() {
         return program -> {
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken",accessToken);
-            extrasMap.put("languageName",languageName);
-            extrasMap.put("programs",programsJson);
-            extrasMap.put("program",program.toString());
-            startActivity(DetailActivity.class,extrasMap);
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
+            extrasMap.put("languageName", languageName);
+            extrasMap.put("programs", programsJson);
+            extrasMap.put("program", program.toString());
+            extrasMap.put("logoBlob", logoBlob);
+            startActivity(DetailActivity.class, extrasMap);
         };
     }
 
@@ -102,8 +122,21 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programs) {
-        ProgramAdapter programAdapter = new ProgramAdapter(this,filterPrograms(programs),getOnClickCallback());
+        ProgramAdapter programAdapter = new ProgramAdapter(this, filterPrograms(programs), getOnClickCallback());
         recyclerView.setAdapter(programAdapter);
+    }
+
+    private void setLanguageDatails() {
+        TextView name = (TextView) findViewById(R.id.language_name);
+        name.setText(languageName);
+        ImageView image = (ImageView) findViewById(R.id.language_image);
+        if (Objects.nonNull(logoBlob)) {
+            int imageBlobLength = logoBlob.length;
+            Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);
+            image.setImageBitmap(logo);
+        } else {
+            image.setImageResource(R.drawable.ic_circle_logo);
+        }
     }
 
 }

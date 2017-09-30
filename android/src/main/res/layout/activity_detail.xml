@@ -1,18 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.amanmehara.programming.android.activities.DetailActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.amanmehara.programming.android.activities.DetailActivity">
 
-    <include android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
-    <include android:id="@+id/progressbar"
-        layout="@layout/progressbar"/>
+    <include
+        android:id="@+id/progressbar"
+        layout="@layout/progressbar" />
 
-    <LinearLayout android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="8dp">
@@ -24,12 +27,13 @@
             card_view:cardCornerRadius="6dp"
             card_view:cardElevation="4dp">
 
-            <TextView android:id="@+id/program_name"
+            <TextView
+                android:id="@+id/program_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:padding="16dp"
                 android:textColor="@color/primary_text"
-                android:padding="16dp"/>
+                android:textSize="20sp" />
 
         </android.support.v7.widget.CardView>
 

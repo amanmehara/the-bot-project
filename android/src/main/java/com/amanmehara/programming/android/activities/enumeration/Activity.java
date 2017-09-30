@@ -30,7 +30,4 @@ public enum Activity {
         return clazz;
     }
 
-
-
-
 }

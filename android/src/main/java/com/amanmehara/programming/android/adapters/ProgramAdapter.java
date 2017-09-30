@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.amanmehara.programming.android.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +45,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
         try {
             viewHolder.mTextView.setText(programs.getJSONObject(i).getString("name"));
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
 
     }
@@ -68,7 +70,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
             try {
                 onClickCallback.accept(programs.getJSONObject(getLayoutPosition()));
             } catch (Exception e) {
-                Log.e(TAG,e.getMessage());
+                Log.e(TAG, e.getMessage());
             }
         }
     }

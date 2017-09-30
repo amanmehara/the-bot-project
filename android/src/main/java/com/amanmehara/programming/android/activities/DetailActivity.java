@@ -1,5 +1,6 @@
 package com.amanmehara.programming.android.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.amanmehara.programming.android.activities.enumeration.Activity;
 import com.amanmehara.programming.android.adapters.DetailAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.rest.GithubAPIClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,45 +20,63 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class DetailActivity extends BaseActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Bundle bundle;
+    private SharedPreferences sharedPreferences;
     private String accessToken;
     private String languageName;
+    private byte[] logoBlob;
+    private String programJson;
+    private String programsJson;
     private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
+
         setContentView(R.layout.activity_detail);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
         bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
+        logoBlob = bundle.getByteArray("logoBlob");
+        programJson = bundle.getString("program");
+        programsJson = bundle.getString("programs");
 
         try {
-            if(isConnected()) {
-                JSONObject program = new JSONObject(bundle.getString("program"));
-                String url = program.getString("url") + "&access_token=" + accessToken;
-                setProgramName(R.id.program_name,program);
-                new GithubAPIClient(this,getResponseCallback()).execute(url);
+            if (isConnected()) {
+                JSONObject program = new JSONObject(programJson);
+                setProgramName(R.id.program_name, program);
+                String url = program.getString("url");
+                String response = sharedPreferences.getString(url, null);
+                if (Objects.nonNull(response)) {
+                    getProgramResponseCallback(url, true).accept(response);
+                } else {
+                    new GithubAPIClient(this, getProgramResponseCallback(url, false))
+                            .execute(withAccessToken(url));
+
+                }
             } else {
                 setAdapter();
-                Map<String,Serializable> extrasMap = new HashMap<>();
+                Map<String, Serializable> extrasMap = new HashMap<>();
                 extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                extrasMap.put("languageName",languageName);
-                extrasMap.put("programs",bundle.getString("programs"));
-                extrasMap.put("program",bundle.getString("program"));
-                startActivity(ConnectionActivity.class,extrasMap);
+                extrasMap.put("languageName", languageName);
+                extrasMap.put("programs", programsJson);
+                extrasMap.put("program", programJson);
+                extrasMap.put("logoBlob", logoBlob);
+                startActivity(ConnectionActivity.class, extrasMap);
             }
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
 
     }
@@ -71,25 +91,38 @@ public class DetailActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                Map<String, Serializable> extrasMap = new HashMap<>();
+                extrasMap.put("accessToken", accessToken);
+                extrasMap.put("languageName", languageName);
+                extrasMap.put("logoBlob", logoBlob);
+                extrasMap.put("programs", programsJson);
+                startActivity(ProgramActivity.class, extrasMap);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        if (id == android.R.id.home) {
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("languageName",languageName);
-            extrasMap.put("programs",bundle.getString("programs"));
-            startActivity(ProgramActivity.class,extrasMap);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
-    private Consumer<String> getResponseCallback() {
+    private Consumer<String> getProgramResponseCallback(String url, boolean cacheHit) {
         return response -> {
             try {
+                if (!cacheHit) {
+                    sharedPreferences.edit().putString(url, response).apply();
+                }
                 setAdapter(new JSONArray(response));
             } catch (JSONException e) {
-                Log.e(TAG,e.getMessage());
+                Log.e(TAG, e.getMessage());
+                if (cacheHit) {
+                    sharedPreferences.edit().remove(url).apply();
+                }
                 setAdapter();
             }
         };
@@ -100,7 +133,13 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programContents) {
-        DetailAdapter detailAdapter = new DetailAdapter(accessToken,this,languageName,programContents);
+        DetailAdapter detailAdapter = new DetailAdapter(
+                accessToken,
+                this,
+                languageName,
+                programContents,
+                sharedPreferences
+        );
         recyclerView.setAdapter(detailAdapter);
     }
 
@@ -109,8 +148,12 @@ public class DetailActivity extends BaseActivity {
         try {
             name.setText(program.getString("name"));
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
+    }
+
+    private String withAccessToken(String url) {
+        return url + "&access_token=" + accessToken;
     }
 
 }
