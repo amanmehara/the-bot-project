@@ -2,6 +2,7 @@ package com.amanmehara.programming.android.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Base64;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.rest.GithubAPIClient;
@@ -21,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.FILE;
@@ -29,22 +33,24 @@ import static com.amanmehara.programming.android.common.Type.FILE;
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
 
     private static final String TAG = DetailAdapter.class.getSimpleName();
-    private final Map<String,Map<String,Object>> cache = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final String languageName;
     private final JSONArray programContents;
+    private final SharedPreferences sharedPreferences;
 
     public DetailAdapter(
             String accessToken,
             Activity activity,
             String languageName,
-            JSONArray programContents
+            JSONArray programContents,
+            SharedPreferences sharedPreferences
     ) {
         this.accessToken = accessToken;
         this.activity = activity;
         this.languageName = languageName;
         this.programContents = programContents;
+        this.sharedPreferences = sharedPreferences;
     }
 
     @Override
@@ -57,21 +63,27 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
+
         WebSettings webSettings = viewHolder.fileContentView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
         try {
+
             JSONObject jsonObject = programContents.getJSONObject(i);
+
             viewHolder.fileNameView.setText(jsonObject.getString("name"));
+
             String url = jsonObject.getString("url");
-            if(cache.containsKey(url)) {
-                String html = (String) cache.get(url).get("html");
-                viewHolder.fileContentView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+            String response = sharedPreferences.getString(url, null);
+            if (Objects.nonNull(response)) {
+                getContentResponseCallback(url, true, viewHolder).accept(response);
             } else {
-                cache.put(url,new ConcurrentHashMap<>());
-                resolveContent(viewHolder,url);
+                new GithubAPIClient(activity, getContentResponseCallback(url, false, viewHolder))
+                        .execute(withAccessToken(url));
             }
+
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -81,7 +93,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     private String decodeContent(String content) {
-        return new String(Base64.decode(content,Base64.DEFAULT));
+        return new String(Base64.decode(content, Base64.DEFAULT));
     }
 
     private String generateHtml(String content) {
@@ -99,20 +111,24 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "</html>";
     }
 
-    private void resolveContent(ViewHolder viewHolder, String url) {
-        new GithubAPIClient(activity, response -> {
+    private Consumer<String> getContentResponseCallback(String url, boolean cacheHit, ViewHolder viewHolder) {
+        return response -> {
             try {
+                if (!cacheHit) {
+                    sharedPreferences.edit().putString(url, response).apply();
+                }
                 JSONObject resolvedContent = new JSONObject(response);
-                if(resolvedContent.getString("type").equals(FILE.getValue())) {
-                    cache.get(url).put("resolvedContent",resolvedContent);
+                if (resolvedContent.getString("type").equals(FILE.getValue())) {
                     String html = generateHtml(decodeContent(resolvedContent.getString("content")));
-                    cache.get(url).put("html",html);
                     viewHolder.fileContentView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
                 }
             } catch (JSONException e) {
-                Log.e(TAG,e.getMessage());
+                Log.e(TAG, e.getMessage());
+                if (cacheHit) {
+                    sharedPreferences.edit().remove(url).apply();
+                }
             }
-        }).execute(withAccessToken(url));
+        };
     }
 
     private String reverseMapLanguageName(String name) {
