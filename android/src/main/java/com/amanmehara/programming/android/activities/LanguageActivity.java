@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class LanguageActivity extends BaseActivity {
@@ -108,12 +108,13 @@ public class LanguageActivity extends BaseActivity {
         };
     }
 
-    private BiConsumer<String, JSONArray> getOnClickCallback() {
-        return (languageName, programs) -> {
+    private BiFunction<String, byte[], Consumer<JSONArray>> getOnClickCallback() {
+        return (languageName, logoBlob) -> (programs) -> {
             Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("accessToken", accessToken);
             extrasMap.put("languageName", languageName);
             extrasMap.put("programs", programs.toString());
+            extrasMap.put("logoBlob", logoBlob);
             startActivity(ProgramActivity.class, extrasMap);
         };
     }

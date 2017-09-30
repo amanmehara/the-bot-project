@@ -1,10 +1,14 @@
 package com.amanmehara.programming.android.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
@@ -27,6 +31,7 @@ public class ProgramActivity extends BaseActivity {
     private String accessToken;
     private String languageName;
     private String programsJson;
+    private byte[] logoBlob;
     private RecyclerView recyclerView;
 
     @Override
@@ -40,6 +45,9 @@ public class ProgramActivity extends BaseActivity {
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
         programsJson = bundle.getString("programs");
+        logoBlob = bundle.getByteArray("logoBlob");
+
+        setLanguageDatails();
 
         try {
             setAdapter(new JSONArray(programsJson));
@@ -89,6 +97,7 @@ public class ProgramActivity extends BaseActivity {
             extrasMap.put("languageName", languageName);
             extrasMap.put("programs", programsJson);
             extrasMap.put("program", program.toString());
+            extrasMap.put("logoBlob", logoBlob);
             startActivity(DetailActivity.class, extrasMap);
         };
     }
@@ -100,6 +109,19 @@ public class ProgramActivity extends BaseActivity {
     private void setAdapter(JSONArray programs) {
         ProgramAdapter programAdapter = new ProgramAdapter(this, filterPrograms(programs), getOnClickCallback());
         recyclerView.setAdapter(programAdapter);
+    }
+
+    private void setLanguageDatails() {
+        TextView name = (TextView) findViewById(R.id.language_name);
+        name.setText(languageName);
+        ImageView image = (ImageView) findViewById(R.id.language_image);
+        if(Objects.nonNull(logoBlob)) {
+            int imageBlobLength = logoBlob.length;
+            Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);
+            image.setImageBitmap(logo);
+        } else {
+            image.setImageResource(R.drawable.ic_circle_logo);
+        }
     }
 
 }

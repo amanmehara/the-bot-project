@@ -66,6 +66,7 @@ public class DetailActivity extends BaseActivity {
                 extrasMap.put("languageName", languageName);
                 extrasMap.put("programs", bundle.getString("programs"));
                 extrasMap.put("program", bundle.getString("program"));
+                extrasMap.put("logoBlob", bundle.getByteArray("logoBlob"));
                 startActivity(ConnectionActivity.class, extrasMap);
             }
         } catch (JSONException e) {
