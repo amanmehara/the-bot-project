@@ -38,13 +38,13 @@ public class GithubOAuthActivity extends BaseActivity {
         webView = (WebView) findViewById(R.id.authentication);
         webView.getSettings().setJavaScriptEnabled(true);
 
-        if(isConnected()) {
+        if (isConnected()) {
             overrideUrlLoading();
             authenticate();
         } else {
-            Map<String,Serializable> extrasMap = new HashMap<>();
+            Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("enumeration.Activity", Activity.GITHUB);
-            startActivity(ConnectionActivity.class,extrasMap);
+            startActivity(ConnectionActivity.class, extrasMap);
         }
 
     }
@@ -55,11 +55,11 @@ public class GithubOAuthActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
-                if(uri.toString().startsWith(REDIRECT_URI)) {
+                if (uri.toString().startsWith(REDIRECT_URI)) {
                     String code = uri.getQueryParameter("code");
                     String state = uri.getQueryParameter("state");
-                    String urlEncodedFormData = String.format("client_id=%s&client_secret=%s&code=%s",CLIENT_ID,CLIENT_SECRET,code);
-                    new GithubOAuthClient(activity,getResponseCallback()).execute(urlEncodedFormData);
+                    String urlEncodedFormData = String.format("client_id=%s&client_secret=%s&code=%s", CLIENT_ID, CLIENT_SECRET, code);
+                    new GithubOAuthClient(activity, getResponseCallback()).execute(urlEncodedFormData);
                 }
                 return super.shouldOverrideUrlLoading(view, request);
             }
@@ -74,19 +74,19 @@ public class GithubOAuthActivity extends BaseActivity {
     private String constructUrl(String state) {
         return "http://github.com/login/oauth/authorize"
                 + "?"
-                + String.format("client_id=%s",CLIENT_ID)
+                + String.format("client_id=%s", CLIENT_ID)
                 + "&"
-                + String.format("redirect_uri=%s",REDIRECT_URI)
+                + String.format("redirect_uri=%s", REDIRECT_URI)
                 + "&"
-                + String.format("state=%s",state);
+                + String.format("state=%s", state);
     }
 
     private Consumer<String> getResponseCallback() {
         return response -> {
-            String accessToken = response.substring("access_token=".length(),response.indexOf("&"));
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken",accessToken);
-            startActivity(LanguageActivity.class,extrasMap);
+            String accessToken = response.substring("access_token=".length(), response.indexOf("&"));
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
+            startActivity(LanguageActivity.class, extrasMap);
         };
     }
 

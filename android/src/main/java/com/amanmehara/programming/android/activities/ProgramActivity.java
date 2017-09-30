@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.Type;
@@ -44,7 +45,7 @@ public class ProgramActivity extends BaseActivity {
         try {
             setAdapter(new JSONArray(programsJson));
         } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
             setAdapter();
         }
 
@@ -73,12 +74,12 @@ public class ProgramActivity extends BaseActivity {
 
     private JSONArray filterPrograms(JSONArray programs) {
         JSONArray filtered = new JSONArray();
-        for(int i = 0; i < programs.length(); i++) {
+        for (int i = 0; i < programs.length(); i++) {
             JSONObject program = programs.optJSONObject(i);
-            if(Objects.nonNull(program)) {
+            if (Objects.nonNull(program)) {
                 String name = program.optString("name");
                 String type = program.optString("type");
-                if(type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
+                if (type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
                     filtered.put(program);
                 }
             }
@@ -88,12 +89,12 @@ public class ProgramActivity extends BaseActivity {
 
     private Consumer<JSONObject> getOnClickCallback() {
         return program -> {
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken",accessToken);
-            extrasMap.put("languageName",languageName);
-            extrasMap.put("programs",programsJson);
-            extrasMap.put("program",program.toString());
-            startActivity(DetailActivity.class,extrasMap);
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
+            extrasMap.put("languageName", languageName);
+            extrasMap.put("programs", programsJson);
+            extrasMap.put("program", program.toString());
+            startActivity(DetailActivity.class, extrasMap);
         };
     }
 
@@ -102,7 +103,7 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programs) {
-        ProgramAdapter programAdapter = new ProgramAdapter(this,filterPrograms(programs),getOnClickCallback());
+        ProgramAdapter programAdapter = new ProgramAdapter(this, filterPrograms(programs), getOnClickCallback());
         recyclerView.setAdapter(programAdapter);
     }
 

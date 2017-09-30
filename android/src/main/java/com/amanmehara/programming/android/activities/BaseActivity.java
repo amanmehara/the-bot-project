@@ -28,7 +28,7 @@ public abstract class BaseActivity extends Activity {
     }
 
     protected void setActionBar(int id) {
-        setActionBar((Toolbar)findViewById(id));
+        setActionBar((Toolbar) findViewById(id));
     }
 
     protected RecyclerView setRecyclerView(int id) {
@@ -43,8 +43,8 @@ public abstract class BaseActivity extends Activity {
         startActivity(clazz, Collections.emptyMap());
     }
 
-    protected void startActivity(Class<? extends BaseActivity> clazz, Map<String,Serializable> extrasMap) {
-        Intent intent = new Intent(this,clazz);
+    protected void startActivity(Class<? extends BaseActivity> clazz, Map<String, Serializable> extrasMap) {
+        Intent intent = new Intent(this, clazz);
         extrasMap.forEach(intent::putExtra);
         startActivity(intent);
     }

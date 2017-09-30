@@ -22,7 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by @amanmehara on 03-09-2017.
  */
 
-public class GithubOAuthClient extends AsyncTask<String,Integer,String> {
+public class GithubOAuthClient extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = GithubOAuthClient.class.getSimpleName();
     private static final String URL = "https://github.com/login/oauth/access_token";

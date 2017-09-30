@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+
 import com.amanmehara.programming.android.R;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by @amanmehara on 20-06-2017.
  */
-public class GithubAPIClient extends AsyncTask<String,Integer,String> {
+public class GithubAPIClient extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = GithubAPIClient.class.getSimpleName();
     private final Consumer<String> callback;
