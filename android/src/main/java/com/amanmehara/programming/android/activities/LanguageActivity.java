@@ -1,5 +1,6 @@
 package com.amanmehara.programming.android.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import com.amanmehara.programming.android.R;
 import com.amanmehara.programming.android.common.Constants;
 import com.amanmehara.programming.android.common.Type;
 import com.amanmehara.programming.android.rest.GithubAPIClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,7 @@ public class LanguageActivity extends BaseActivity {
 
     private static final String TAG = LanguageActivity.class.getSimpleName();
     private static final String LANGUAGES_PATH = "contents?ref=master";
+    private SharedPreferences sharedPreferences;
     private String accessToken;
     private RecyclerView recyclerView;
 
@@ -34,19 +37,27 @@ public class LanguageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+
         setContentView(R.layout.activity_language);
         setActionBar(R.id.toolbar);
         recyclerView = setRecyclerView(R.id.language_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
-        String url = Constants.ENDPOINT + LANGUAGES_PATH + "&access_token=" + accessToken;
+        String url = Constants.ENDPOINT + LANGUAGES_PATH;
 
         if (isConnected()) {
-            new GithubAPIClient(this, getResponseCallback()).execute(url);
+            String response = sharedPreferences.getString(url, null);
+            if (Objects.nonNull(response)) {
+                getLanguagesResponseCallback(url, true).accept(response);
+            } else {
+                new GithubAPIClient(this, getLanguagesResponseCallback(url, false))
+                        .execute(withAccessToken(url));
+            }
         } else {
             setAdapter();
-            Map<String,Serializable> extrasMap = new HashMap<>();
+            Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
             extrasMap.put("accessToken", accessToken);
             startActivity(ConnectionActivity.class, extrasMap);
@@ -72,11 +83,11 @@ public class LanguageActivity extends BaseActivity {
 
     private JSONArray filterLanguages(JSONArray languages) {
         JSONArray filtered = new JSONArray();
-        for(int i = 0; i < languages.length(); i++) {
+        for (int i = 0; i < languages.length(); i++) {
             JSONObject language = languages.optJSONObject(i);
-            if(Objects.nonNull(language)) {
+            if (Objects.nonNull(language)) {
                 String type = language.optString("type");
-                if(type.equals(Type.DIRECTORY.getValue())) {
+                if (type.equals(Type.DIRECTORY.getValue())) {
                     filtered.put(language);
                 }
             }
@@ -84,24 +95,30 @@ public class LanguageActivity extends BaseActivity {
         return filtered;
     }
 
-    private BiConsumer<String,JSONArray> getOnClickCallback() {
-        return (languageName, programs) -> {
-            Map<String,Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken",accessToken);
-            extrasMap.put("languageName",languageName);
-            extrasMap.put("programs",programs.toString());
-            startActivity(ProgramActivity.class,extrasMap);
+    private Consumer<String> getLanguagesResponseCallback(String url, boolean cacheHit) {
+        return response -> {
+            try {
+                if (!cacheHit) {
+                    sharedPreferences.edit().putString(url, response).apply();
+                }
+                setAdapter(new JSONArray(response));
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+                if (cacheHit) {
+                    sharedPreferences.edit().remove(url).apply();
+                }
+                setAdapter();
+            }
         };
     }
 
-    private Consumer<String> getResponseCallback() {
-        return response -> {
-            try {
-                setAdapter(new JSONArray(response));
-            } catch (JSONException e) {
-                Log.e(TAG,e.getMessage());
-                setAdapter();
-            }
+    private BiConsumer<String, JSONArray> getOnClickCallback() {
+        return (languageName, programs) -> {
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
+            extrasMap.put("languageName", languageName);
+            extrasMap.put("programs", programs.toString());
+            startActivity(ProgramActivity.class, extrasMap);
         };
     }
 
@@ -110,8 +127,18 @@ public class LanguageActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray languages) {
-        LanguageAdapter languageAdapter = new LanguageAdapter(accessToken,this,filterLanguages(languages),getOnClickCallback());
+        LanguageAdapter languageAdapter = new LanguageAdapter(
+                accessToken,
+                this,
+                filterLanguages(languages),
+                sharedPreferences,
+                getOnClickCallback()
+        );
         recyclerView.setAdapter(languageAdapter);
+    }
+
+    private String withAccessToken(String url) {
+        return url + "&access_token=" + accessToken;
     }
 
 }
