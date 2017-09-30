@@ -74,11 +74,19 @@ public class LanguageActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            startActivity(MainActivity.class);
-            return true;
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                startActivity(MainActivity.class);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private JSONArray filterLanguages(JSONArray languages) {

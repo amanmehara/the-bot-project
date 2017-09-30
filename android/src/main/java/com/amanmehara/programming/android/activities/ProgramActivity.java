@@ -69,13 +69,21 @@ public class ProgramActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            Map<String, Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken", accessToken);
-            startActivity(LanguageActivity.class, extrasMap);
-            return true;
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                Map<String, Serializable> extrasMap = new HashMap<>();
+                extrasMap.put("accessToken", accessToken);
+                startActivity(LanguageActivity.class, extrasMap);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private boolean exclusion(String name) {
@@ -122,7 +130,7 @@ public class ProgramActivity extends BaseActivity {
         TextView name = (TextView) findViewById(R.id.language_name);
         name.setText(languageName);
         ImageView image = (ImageView) findViewById(R.id.language_image);
-        if(Objects.nonNull(logoBlob)) {
+        if (Objects.nonNull(logoBlob)) {
             int imageBlobLength = logoBlob.length;
             Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);
             image.setImageBitmap(logo);

@@ -5,6 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_invalidate_cache">Invalidate Cache</string>
+    <string name="action_rate">Rate</string>
     <string name="title_activity_language">@string/app_name</string>
     <string name="title_activity_programs">@string/app_name</string>
     <string name="title_activity_detail">@string/app_name</string>

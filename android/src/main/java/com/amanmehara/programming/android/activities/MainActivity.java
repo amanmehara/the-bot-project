@@ -31,12 +31,19 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_invalidate_cache) {
-            sharedPreferences.edit().clear().apply();
-            return true;
+        switch (id) {
+            case R.id.action_invalidate_cache: {
+                sharedPreferences.edit().clear().apply();
+                return true;
+            }
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void getStarted(View view) {

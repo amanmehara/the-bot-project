@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:background="@color/primary"
     android:elevation="4dp"
-    android:popupTheme="@android:style/Theme.Light"
+    android:popupTheme="@android:style/Theme.Material.Light"
     android:theme="@android:style/Theme.DeviceDefault" />

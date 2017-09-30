@@ -91,15 +91,24 @@ public class DetailActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            Map<String, Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken", accessToken);
-            extrasMap.put("languageName", languageName);
-            extrasMap.put("logoBlob", logoBlob);
-            extrasMap.put("programs", programsJson);
-            startActivity(ProgramActivity.class, extrasMap);
+        switch (id) {
+            case R.id.action_rate: {
+                rate();
+                return true;
+            }
+            case android.R.id.home: {
+                Map<String, Serializable> extrasMap = new HashMap<>();
+                extrasMap.put("accessToken", accessToken);
+                extrasMap.put("languageName", languageName);
+                extrasMap.put("logoBlob", logoBlob);
+                extrasMap.put("programs", programsJson);
+                startActivity(ProgramActivity.class, extrasMap);
+                return true;
+            }
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private Consumer<String> getProgramResponseCallback(String url, boolean cacheHit) {

@@ -91,6 +91,13 @@
                         android:text="(C, C++, C#, F#, Groovy, Java, JavaScript, PHP, Python, Scala, SQL)"
                         android:textColor="@color/accent"
                         android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8sp"
+                        android:text="* Internet connection &amp; GitHub credentials are required." />
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
