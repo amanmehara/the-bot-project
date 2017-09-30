@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
+import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.common.Type;
 
 import org.json.JSONArray;
@@ -38,7 +39,7 @@ public class ProgramActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programs);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
@@ -68,6 +69,12 @@ public class ProgramActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == android.R.id.home) {
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
+            startActivity(LanguageActivity.class, extrasMap);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

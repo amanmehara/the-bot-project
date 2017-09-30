@@ -40,7 +40,7 @@ public class LanguageActivity extends BaseActivity {
         sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_language);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.language_recycler_view);
 
         Bundle bundle = getIntent().getExtras();
@@ -74,6 +74,10 @@ public class LanguageActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == android.R.id.home) {
+            startActivity(MainActivity.class);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

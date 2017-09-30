@@ -19,7 +19,7 @@ public class MainActivity extends BaseActivity {
         sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_main);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, false);
     }
 
     @Override

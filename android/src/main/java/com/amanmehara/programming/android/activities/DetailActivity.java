@@ -30,6 +30,9 @@ public class DetailActivity extends BaseActivity {
     private SharedPreferences sharedPreferences;
     private String accessToken;
     private String languageName;
+    private byte[] logoBlob;
+    private String programJson;
+    private String programsJson;
     private RecyclerView recyclerView;
 
     @Override
@@ -39,16 +42,19 @@ public class DetailActivity extends BaseActivity {
         sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_detail);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
         bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
+        logoBlob = bundle.getByteArray("logoBlob");
+        programJson = bundle.getString("program");
+        programsJson = bundle.getString("programs");
 
         try {
             if (isConnected()) {
-                JSONObject program = new JSONObject(bundle.getString("program"));
+                JSONObject program = new JSONObject(programJson);
                 setProgramName(R.id.program_name, program);
                 String url = program.getString("url");
                 String response = sharedPreferences.getString(url, null);
@@ -64,9 +70,9 @@ public class DetailActivity extends BaseActivity {
                 Map<String, Serializable> extrasMap = new HashMap<>();
                 extrasMap.put("enumeration.Activity", Activity.DETAIL);
                 extrasMap.put("languageName", languageName);
-                extrasMap.put("programs", bundle.getString("programs"));
-                extrasMap.put("program", bundle.getString("program"));
-                extrasMap.put("logoBlob", bundle.getByteArray("logoBlob"));
+                extrasMap.put("programs", programsJson);
+                extrasMap.put("program", programJson);
+                extrasMap.put("logoBlob", logoBlob);
                 startActivity(ConnectionActivity.class, extrasMap);
             }
         } catch (JSONException e) {
@@ -87,8 +93,10 @@ public class DetailActivity extends BaseActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("accessToken", accessToken);
             extrasMap.put("languageName", languageName);
-            extrasMap.put("programs", bundle.getString("programs"));
+            extrasMap.put("logoBlob", logoBlob);
+            extrasMap.put("programs", programsJson);
             startActivity(ProgramActivity.class, extrasMap);
         }
         return super.onOptionsItemSelected(item);

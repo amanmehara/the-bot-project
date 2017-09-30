@@ -1,5 +1,6 @@
 package com.amanmehara.programming.android.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,8 +27,11 @@ public abstract class BaseActivity extends Activity {
         return Objects.nonNull(activeNetworkInfo) && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    protected void setActionBar(int id) {
+    protected void setActionBar(int id, boolean showHomeAsUp) {
         setActionBar((Toolbar) findViewById(id));
+        ActionBar actionBar = getActionBar();
+        //noinspection ConstantConditions
+        actionBar.setDisplayHomeAsUpEnabled(showHomeAsUp);
     }
 
     protected RecyclerView setRecyclerView(int id) {

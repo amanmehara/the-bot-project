@@ -21,7 +21,7 @@ public class ConnectionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        setActionBar(R.id.toolbar);
+        setActionBar(R.id.toolbar, true);
         bundle = getIntent().getExtras();
         activity = (Activity) bundle.getSerializable("enumeration.Activity");
     }
@@ -35,6 +35,10 @@ public class ConnectionActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == android.R.id.home) {
+            startActivity(MainActivity.class);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
