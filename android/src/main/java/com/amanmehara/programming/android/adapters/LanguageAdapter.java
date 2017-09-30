@@ -158,7 +158,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                     if (Objects.nonNull(response)) {
                         getLogoResponseCallback(url, true, viewHolder).accept(response);
                     } else {
-                        new GithubAPIClient(activity, getProgramsResponseCallback(url, false, viewHolder))
+                        new GithubAPIClient(activity, getLogoResponseCallback(url, false, viewHolder))
                                 .execute(withAccessToken(url));
                     }
                 }
