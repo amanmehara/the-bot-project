@@ -1,6 +1,5 @@
 package com.amanmehara.programming.android.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

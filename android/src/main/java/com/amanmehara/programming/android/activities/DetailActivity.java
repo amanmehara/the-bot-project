@@ -36,7 +36,7 @@ public class DetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sharedPreferences = getPreferences(MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_detail);
         setActionBar(R.id.toolbar);
@@ -84,10 +84,6 @@ public class DetailActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == android.R.id.home) {
             Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("languageName", languageName);

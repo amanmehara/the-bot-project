@@ -1,18 +1,21 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context=".activities.MainActivity">
 
-        <include android:id="@+id/toolbar"
-            layout="@layout/toolbar"/>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
 
-        <LinearLayout android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="8dp">
@@ -23,31 +26,41 @@
                 android:layout_margin="8dp"
                 card_view:cardCornerRadius="6dp"
                 card_view:cardElevation="4dp">
-                <LinearLayout android:layout_width="match_parent"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16sp">
-                    <ImageView android:layout_width="wrap_content"
+
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_circle_logo"/>
-                    <LinearLayout android:layout_width="match_parent"
+                        android:src="@drawable/ic_circle_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:orientation="vertical"
                         android:paddingLeft="16sp">
-                        <TextView android:layout_width="match_parent"
+
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="Programming!"
                             android:textColor="@color/primary_text"
-                            android:textSize="24sp"
-                            android:text="Programming!"/>
-                        <TextView android:layout_width="match_parent"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="4sp"
                             android:paddingLeft="20sp"
+                            android:paddingTop="4sp"
+                            android:text="- Get the Code"
                             android:textSize="20sp"
-                            android:textStyle="italic"
-                            android:text="- Get the Code"/>
+                            android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -59,19 +72,25 @@
                 android:layout_margin="8dp"
                 card_view:cardCornerRadius="6dp"
                 card_view:cardElevation="4dp">
-                <LinearLayout android:layout_width="match_parent"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16sp">
-                    <TextView android:layout_width="match_parent"
+
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Most commonly used code snippets &amp; important algorithms in different programming languages are provided in a comprehensive way."/>
-                    <TextView android:layout_width="match_parent"
+                        android:text="Most commonly used code snippets &amp; important algorithms in different programming languages are provided in a comprehensive way." />
+
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="4sp"
                         android:text="(C, C++, C#, F#, Groovy, Java, JavaScript, PHP, Python, Scala, SQL)"
-                        android:textSize="16sp"
-                        android:textColor="@color/accent"/>
+                        android:textColor="@color/accent"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -79,27 +98,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="4dp"
+                android:background="?android:attr/selectableItemBackground"
                 card_view:cardBackgroundColor="@color/primary"
-                android:background="?android:attr/selectableItemBackground">
-                <LinearLayout android:layout_width="match_parent"
+                card_view:cardCornerRadius="6dp"
+                card_view:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:background="?android:attr/selectableItemBackground"
-                    android:padding="16sp"
-                    android:onClick="getStarted">
-                    <ImageView android:layout_width="wrap_content"
+                    android:onClick="getStarted"
+                    android:orientation="horizontal"
+                    android:padding="16sp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_keyboard_arrow_right_white_36dp"
-                        android:layout_gravity="center_vertical"/>
-                    <TextView android:id="@+id/getStartedButton"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_keyboard_arrow_right_white_36dp" />
+
+                    <TextView
+                        android:id="@+id/getStartedButton"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="Get Started!"
                         android:textColor="@color/icons"
-                        android:layout_height="wrap_content"
-                        android:layout_width="fill_parent"
-                        android:layout_gravity="center_vertical"
-                        android:textSize="24sp"/>
+                        android:textSize="24sp" />
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
