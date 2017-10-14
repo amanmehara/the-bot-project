@@ -98,7 +98,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     private String generateHtml(String content) {
         return "<html>"
-                + "<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400' rel='stylesheet' type='text/css'>"
                 + "<link href='file:///android_asset/prism.css' rel='stylesheet'/>"
                 + "<script src='file:///android_asset/prism.js'></script>"
                 + "<body style='margin:0px; padding:0px;'>"
