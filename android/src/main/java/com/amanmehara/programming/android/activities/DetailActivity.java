@@ -161,6 +161,7 @@ public class DetailActivity extends BaseActivity {
                 programContents,
                 sharedPreferences
         );
+        recyclerView.setItemViewCacheSize(programContents.length());
         recyclerView.setAdapter(detailAdapter);
     }
 
