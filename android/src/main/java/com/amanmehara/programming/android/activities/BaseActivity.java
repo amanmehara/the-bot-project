@@ -37,10 +37,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Created by Aman on 02-09-2017.
- */
-
 public abstract class BaseActivity extends Activity {
 
     protected boolean isConnected() {

@@ -39,10 +39,6 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by @amanmehara on 03-09-2017.
- */
-
 public class GithubOAuthClient extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = GithubOAuthClient.class.getSimpleName();

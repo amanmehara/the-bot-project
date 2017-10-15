@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import com.amanmehara.programming.android.adapters.ProgramAdapter;
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.common.Type;
 
 import org.json.JSONArray;

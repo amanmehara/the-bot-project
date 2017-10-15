@@ -29,9 +29,6 @@ import com.amanmehara.programming.android.activities.LanguageActivity;
 import com.amanmehara.programming.android.activities.MainActivity;
 import com.amanmehara.programming.android.activities.ProgramActivity;
 
-/**
- * Created by @amanmehara on 20-06-2017.
- */
 public enum Activity {
 
     CONNECTION(ConnectionActivity.class),

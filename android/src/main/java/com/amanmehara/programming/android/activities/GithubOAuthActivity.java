@@ -39,10 +39,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-/**
- * Created by @amanmehara on 03-09-2017.
- */
-
 public class GithubOAuthActivity extends BaseActivity {
 
     private static final String TAG = GithubOAuthActivity.class.getSimpleName();
