@@ -20,9 +20,9 @@ android {
     defaultConfig {
         applicationId "com.amanmehara.programming.android"
         minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 9
-        versionName "9.0"
+        targetSdkVersion 23
+        versionCode 10
+        versionName "10.0"
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
