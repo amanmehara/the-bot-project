@@ -44,8 +44,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.FILE;
 
@@ -129,7 +127,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "</html>";
     }
 
-    private Consumer<String> getContentResponseCallback(String url, boolean cacheHit, ViewHolder viewHolder) {
+    private GithubAPIClient.Consumer<String> getContentResponseCallback(String url, boolean cacheHit, ViewHolder viewHolder) {
         return response -> {
             try {
                 if (!cacheHit) {
@@ -150,12 +148,12 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
     }
 
     private String reverseMapLanguageName(String name) {
-        return Stream.of(Language.values())
-                .filter(language -> language.getDisplay().matches(name))
-                .findAny()
-                .map(Enum::name)
-                .map(String::toLowerCase)
-                .orElse(name);
+        for (Language language : Language.values()) {
+            if (language.getDisplay().matches(name)) {
+                return language.name().toLowerCase();
+            }
+        }
+        return name;
     }
 
     private String withAccessToken(String url) {

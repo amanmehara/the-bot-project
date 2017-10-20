@@ -43,8 +43,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class ProgramActivity extends BaseActivity {
 
@@ -107,7 +105,7 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private boolean exclusion(String name) {
-        return Stream.of("icon.png").anyMatch(name::equals);
+        return name.equals("icon.png");
     }
 
     private JSONArray filterPrograms(JSONArray programs) {
@@ -125,7 +123,7 @@ public class ProgramActivity extends BaseActivity {
         return filtered;
     }
 
-    private Consumer<JSONObject> getOnClickCallback() {
+    private ProgramAdapter.Consumer<JSONObject> getOnClickCallback() {
         return program -> {
             Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("accessToken", accessToken);

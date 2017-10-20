@@ -45,9 +45,6 @@ import org.json.JSONObject;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.DIRECTORY;
 import static com.amanmehara.programming.android.common.Type.FILE;
@@ -55,7 +52,7 @@ import static com.amanmehara.programming.android.common.Type.FILE;
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
     private static final String TAG = LanguageAdapter.class.getSimpleName();
-    private static final Map<String,byte[]> logos = new ConcurrentHashMap<>();
+    private static final Map<String, byte[]> logos = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final JSONArray languages;
@@ -110,7 +107,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         return languages.length();
     }
 
-    private Consumer<String> getLogoResponseCallback(String url, boolean cacheHit, String languageName, ViewHolder viewHolder) {
+    private GithubAPIClient.Consumer<String> getLogoResponseCallback(String url, boolean cacheHit, String languageName, ViewHolder viewHolder) {
         return response -> {
             try {
                 if (!cacheHit) {
@@ -120,7 +117,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 byte[] imageBlob = Base64.decode(icon.getString("content"), Base64.DEFAULT);
                 int imageBlobLength = imageBlob.length;
                 Bitmap logo = BitmapFactory.decodeByteArray(imageBlob, 0, imageBlobLength);
-                logos.put(languageName,imageBlob);
+                logos.put(languageName, imageBlob);
                 viewHolder.languageImageView.setImageBitmap(logo);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -146,7 +143,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         return count;
     }
 
-    private Consumer<String> getProgramsResponseCallback(String url, boolean cacheHit, String languageName, ViewHolder viewHolder) {
+    private GithubAPIClient.Consumer<String> getProgramsResponseCallback(String url, boolean cacheHit, String languageName, ViewHolder viewHolder) {
         return response -> {
             try {
                 if (!cacheHit) {
@@ -166,11 +163,12 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
     }
 
     private String mapLanguageName(String name) {
-        return Stream.of(Language.values())
-                .filter(language -> language.name().matches(name.toUpperCase()))
-                .findAny()
-                .map(Language::getDisplay)
-                .orElse(name);
+        for (Language language : Language.values()) {
+            if (language.name().matches(name.toUpperCase())) {
+                return language.getDisplay();
+            }
+        }
+        return name;
     }
 
     private void setLanguageLogo(ViewHolder viewHolder, JSONArray programs, String languageName) {
@@ -227,4 +225,13 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         }
 
     }
+
+    public interface BiFunction<T, U, R> {
+        R apply(T t, U u);
+    }
+
+    public interface Consumer<T> {
+        void accept(T t);
+    }
+
 }

@@ -35,8 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.function.Consumer;
-
 public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHolder> {
 
     private static final String TAG = ProgramAdapter.class.getSimpleName();
@@ -95,4 +93,9 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
             }
         }
     }
+
+    public interface Consumer<T> {
+        void accept(T t);
+    }
+
 }

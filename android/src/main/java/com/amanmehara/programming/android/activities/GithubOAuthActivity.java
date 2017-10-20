@@ -37,7 +37,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class GithubOAuthActivity extends BaseActivity {
 
@@ -98,7 +97,7 @@ public class GithubOAuthActivity extends BaseActivity {
                 + String.format("state=%s", state);
     }
 
-    private Consumer<String> getResponseCallback() {
+    private GithubOAuthClient.Consumer<String> getResponseCallback() {
         return response -> {
             String accessToken = response.substring("access_token=".length(), response.indexOf("&"));
             Map<String, Serializable> extrasMap = new HashMap<>();

@@ -33,8 +33,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -65,8 +63,7 @@ public class GithubAPIClient extends AsyncTask<String, Integer, String> {
                     InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream());
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
             ) {
-                response = bufferedReader.lines()
-                        .collect(Collectors.joining(System.getProperty("line.separator")));
+                response = retrieveResponse(bufferedReader);
             }
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -86,4 +83,21 @@ public class GithubAPIClient extends AsyncTask<String, Integer, String> {
         progressBar.setVisibility(View.GONE);
         callback.accept(response);
     }
+
+    private String retrieveResponse(BufferedReader bufferedReader) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line);
+            stringBuilder.append(System.getProperty("line.separator"));
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public interface Consumer<T> {
+        void accept(T t);
+    }
+
 }

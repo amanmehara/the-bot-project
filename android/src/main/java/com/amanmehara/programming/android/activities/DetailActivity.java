@@ -42,7 +42,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class DetailActivity extends BaseActivity {
 
@@ -132,7 +131,7 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    private Consumer<String> getProgramResponseCallback(String url, boolean cacheHit) {
+    private GithubAPIClient.Consumer<String> getProgramResponseCallback(String url, boolean cacheHit) {
         return response -> {
             try {
                 if (!cacheHit) {
