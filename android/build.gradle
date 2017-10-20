@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId "com.amanmehara.programming.android"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 10
         versionName "10.0"
     }
