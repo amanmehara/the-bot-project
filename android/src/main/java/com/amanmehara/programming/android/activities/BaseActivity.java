@@ -35,14 +35,13 @@ import android.widget.Toolbar;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 public abstract class BaseActivity extends Activity {
 
     protected boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return Objects.nonNull(activeNetworkInfo) && activeNetworkInfo.isConnectedOrConnecting();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     protected void setActionBar(int id, boolean showHomeAsUp) {
@@ -66,7 +65,9 @@ public abstract class BaseActivity extends Activity {
 
     protected void startActivity(Class<? extends BaseActivity> clazz, Map<String, Serializable> extrasMap) {
         Intent intent = new Intent(this, clazz);
-        extrasMap.forEach(intent::putExtra);
+        for (Map.Entry<String, Serializable> entry : extrasMap.entrySet()) {
+            intent.putExtra(entry.getKey(), entry.getValue());
+        }
         startActivity(intent);
     }
 

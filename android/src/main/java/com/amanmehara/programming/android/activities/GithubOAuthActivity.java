@@ -25,7 +25,6 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -55,7 +54,7 @@ public class GithubOAuthActivity extends BaseActivity {
         webView.getSettings().setJavaScriptEnabled(true);
 
         if (isConnected()) {
-            overrideUrlLoading();
+            overrideOnPageFinished();
             authenticate();
         } else {
             Map<String, Serializable> extrasMap = new HashMap<>();
@@ -65,19 +64,18 @@ public class GithubOAuthActivity extends BaseActivity {
 
     }
 
-    private void overrideUrlLoading() {
+    private void overrideOnPageFinished() {
         android.app.Activity activity = this;
         webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                Uri uri = request.getUrl();
+            public void onPageFinished(WebView view, String url) {
+                Uri uri = Uri.parse(url);
                 if (uri.toString().startsWith(REDIRECT_URI)) {
                     String code = uri.getQueryParameter("code");
                     String state = uri.getQueryParameter("state");
                     String urlEncodedFormData = String.format("client_id=%s&client_secret=%s&code=%s", CLIENT_ID, CLIENT_SECRET, code);
                     new GithubOAuthClient(activity, getResponseCallback()).execute(urlEncodedFormData);
                 }
-                return super.shouldOverrideUrlLoading(view, request);
             }
         });
     }

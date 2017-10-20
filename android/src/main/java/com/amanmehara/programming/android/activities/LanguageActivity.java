@@ -42,7 +42,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class LanguageActivity extends BaseActivity {
 
@@ -68,7 +67,7 @@ public class LanguageActivity extends BaseActivity {
 
         if (isConnected()) {
             String response = sharedPreferences.getString(url, null);
-            if (Objects.nonNull(response)) {
+            if (response != null) {
                 getLanguagesResponseCallback(url, true).accept(response);
             } else {
                 new GithubAPIClient(this, getLanguagesResponseCallback(url, false))
@@ -112,7 +111,7 @@ public class LanguageActivity extends BaseActivity {
         JSONArray filtered = new JSONArray();
         for (int i = 0; i < languages.length(); i++) {
             JSONObject language = languages.optJSONObject(i);
-            if (Objects.nonNull(language)) {
+            if (language != null) {
                 String type = language.optString("type");
                 if (type.equals(Type.DIRECTORY.getValue())) {
                     filtered.put(language);

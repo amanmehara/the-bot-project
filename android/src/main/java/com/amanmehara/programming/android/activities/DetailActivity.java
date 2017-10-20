@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class DetailActivity extends BaseActivity {
 
@@ -78,7 +77,7 @@ public class DetailActivity extends BaseActivity {
                 setProgramName(R.id.program_name, program);
                 String url = program.getString("url");
                 String response = sharedPreferences.getString(url, null);
-                if (Objects.nonNull(response)) {
+                if (response != null) {
                     getProgramResponseCallback(url, true).accept(response);
                 } else {
                     new GithubAPIClient(this, getProgramResponseCallback(url, false))

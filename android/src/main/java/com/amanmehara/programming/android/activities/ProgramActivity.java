@@ -42,7 +42,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ProgramActivity extends BaseActivity {
 
@@ -112,7 +111,7 @@ public class ProgramActivity extends BaseActivity {
         JSONArray filtered = new JSONArray();
         for (int i = 0; i < programs.length(); i++) {
             JSONObject program = programs.optJSONObject(i);
-            if (Objects.nonNull(program)) {
+            if (program != null) {
                 String name = program.optString("name");
                 String type = program.optString("type");
                 if (type.equals(Type.DIRECTORY.getValue()) && !exclusion(name)) {
@@ -148,7 +147,7 @@ public class ProgramActivity extends BaseActivity {
         TextView name = (TextView) findViewById(R.id.language_name);
         name.setText(languageName);
         ImageView image = (ImageView) findViewById(R.id.language_image);
-        if (Objects.nonNull(logoBlob)) {
+        if (logoBlob != null) {
             int imageBlobLength = logoBlob.length;
             Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);
             image.setImageBitmap(logo);

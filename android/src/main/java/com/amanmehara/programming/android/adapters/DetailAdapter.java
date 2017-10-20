@@ -43,8 +43,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 import static com.amanmehara.programming.android.common.Type.FILE;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
@@ -92,7 +90,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
             String url = jsonObject.getString("url");
             String response = sharedPreferences.getString(url, null);
-            if (Objects.nonNull(response)) {
+            if (response != null) {
                 getContentResponseCallback(url, true, viewHolder).accept(response);
             } else {
                 new GithubAPIClient(activity, getContentResponseCallback(url, false, viewHolder))

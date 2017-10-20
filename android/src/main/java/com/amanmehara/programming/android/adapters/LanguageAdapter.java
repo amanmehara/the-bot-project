@@ -43,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.amanmehara.programming.android.common.Type.DIRECTORY;
@@ -90,7 +89,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
             String url = language.getString("url");
             String response = sharedPreferences.getString(url, null);
-            if (Objects.nonNull(response)) {
+            if (response != null) {
                 getProgramsResponseCallback(url, true, languageName, viewHolder).accept(response);
             } else {
                 new GithubAPIClient(activity, getProgramsResponseCallback(url, false, languageName, viewHolder))
@@ -178,7 +177,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 if (jsonObject.getString("name").equals("icon.png") && jsonObject.getString("type").equals(FILE.getValue())) {
                     String url = jsonObject.getString("url");
                     String response = sharedPreferences.getString(url, null);
-                    if (Objects.nonNull(response)) {
+                    if (response != null) {
                         getLogoResponseCallback(url, true, languageName, viewHolder).accept(response);
                     } else {
                         new GithubAPIClient(activity, getLogoResponseCallback(url, false, languageName, viewHolder))
