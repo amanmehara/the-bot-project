@@ -21,8 +21,8 @@ android {
         applicationId "com.amanmehara.programming.android"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 12
-        versionName "12.0"
+        versionCode 15
+        versionName "15.0"
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
