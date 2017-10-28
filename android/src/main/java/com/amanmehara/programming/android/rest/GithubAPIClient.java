@@ -21,6 +21,7 @@
 
 package com.amanmehara.programming.android.rest;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -40,12 +41,13 @@ public class GithubAPIClient extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = GithubAPIClient.class.getSimpleName();
     private final Consumer<String> callback;
+    @SuppressLint("StaticFieldLeak")
     private final ProgressBar progressBar;
     private String response;
 
     public GithubAPIClient(Activity activity, Consumer<String> callback) {
         this.callback = callback;
-        this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar);
+        this.progressBar = activity.findViewById(R.id.progressbar);
     }
 
     @Override

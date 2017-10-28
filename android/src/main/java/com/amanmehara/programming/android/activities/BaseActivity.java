@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toolbar;
@@ -45,14 +46,14 @@ public abstract class BaseActivity extends Activity {
     }
 
     protected void setActionBar(int id, boolean showHomeAsUp) {
-        setActionBar((Toolbar) findViewById(id));
+        setActionBar(findViewById(id));
         ActionBar actionBar = getActionBar();
         //noinspection ConstantConditions
         actionBar.setDisplayHomeAsUpEnabled(showHomeAsUp);
     }
 
     protected RecyclerView setRecyclerView(int id) {
-        RecyclerView recyclerView = (RecyclerView) findViewById(id);
+        RecyclerView recyclerView = findViewById(id);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -63,8 +64,23 @@ public abstract class BaseActivity extends Activity {
         startActivity(clazz, Collections.emptyMap());
     }
 
+    protected void startActivity(Class<? extends BaseActivity> clazz, Bundle bundle) {
+        Intent intent = new Intent(this, clazz);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     protected void startActivity(Class<? extends BaseActivity> clazz, Map<String, Serializable> extrasMap) {
         Intent intent = new Intent(this, clazz);
+        for (Map.Entry<String, Serializable> entry : extrasMap.entrySet()) {
+            intent.putExtra(entry.getKey(), entry.getValue());
+        }
+        startActivity(intent);
+    }
+
+    protected void startActivity(Class<? extends BaseActivity> clazz, Bundle bundle, Map<String, Serializable> extrasMap) {
+        Intent intent = new Intent(this, clazz);
+        intent.putExtras(bundle);
         for (Map.Entry<String, Serializable> entry : extrasMap.entrySet()) {
             intent.putExtra(entry.getKey(), entry.getValue());
         }

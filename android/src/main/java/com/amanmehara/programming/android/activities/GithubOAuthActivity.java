@@ -50,7 +50,7 @@ public class GithubOAuthActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_githuboauth);
-        webView = (WebView) findViewById(R.id.authentication);
+        webView = findViewById(R.id.authentication);
         webView.getSettings().setJavaScriptEnabled(true);
 
         if (isConnected()) {

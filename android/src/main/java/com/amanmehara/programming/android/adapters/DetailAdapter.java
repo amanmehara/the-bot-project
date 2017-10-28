@@ -31,8 +31,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.amanmehara.programming.android.R;
@@ -43,58 +41,61 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static com.amanmehara.programming.android.common.Type.FILE;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
 
     private static final String TAG = DetailAdapter.class.getSimpleName();
+    private static final Map<String, String> fileContents = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final String languageName;
     private final JSONArray programContents;
     private final SharedPreferences sharedPreferences;
+    private final BiConsumer<String, String> onClickCallback;
 
     public DetailAdapter(
             String accessToken,
             Activity activity,
             String languageName,
             JSONArray programContents,
-            SharedPreferences sharedPreferences
+            SharedPreferences sharedPreferences,
+            BiConsumer<String, String> onClickCallback
     ) {
         this.accessToken = accessToken;
         this.activity = activity;
         this.languageName = languageName;
         this.programContents = programContents;
         this.sharedPreferences = sharedPreferences;
+        this.onClickCallback = onClickCallback;
     }
 
     @Override
     public DetailAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.files_list, viewGroup, false);
+                .inflate(R.layout.details_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-
-        WebSettings webSettings = viewHolder.fileContentView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setTextZoom(75);
-
         try {
 
             JSONObject jsonObject = programContents.getJSONObject(i);
 
-            viewHolder.fileNameView.setText(jsonObject.getString("name"));
+            String fileName = jsonObject.getString("name");
+            viewHolder.fileNameView.setText(fileName);
 
             String url = jsonObject.getString("url");
             String response = sharedPreferences.getString(url, null);
             if (response != null) {
-                getContentResponseCallback(url, true, viewHolder).accept(response);
+                getContentResponseCallback(url, true, fileName).accept(response);
             } else {
-                new GithubAPIClient(activity, getContentResponseCallback(url, false, viewHolder))
+                new GithubAPIClient(activity, getContentResponseCallback(url, false, fileName))
                         .execute(withAccessToken(url));
             }
 
@@ -126,7 +127,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "</html>";
     }
 
-    private GithubAPIClient.Consumer<String> getContentResponseCallback(String url, boolean cacheHit, ViewHolder viewHolder) {
+    private GithubAPIClient.Consumer<String> getContentResponseCallback(String url, boolean cacheHit, String fileName) {
         return response -> {
             try {
                 if (!cacheHit) {
@@ -135,7 +136,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 JSONObject resolvedContent = new JSONObject(response);
                 if (resolvedContent.getString("type").equals(FILE.getValue())) {
                     String html = generateHtml(decodeContent(resolvedContent.getString("content")));
-                    viewHolder.fileContentView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+                    fileContents.put(fileName, html);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -159,16 +160,32 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         return url + "&access_token=" + accessToken;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView fileNameView;
-        private WebView fileContentView;
 
         private ViewHolder(View v) {
             super(v);
-            fileNameView = (TextView) v.findViewById(R.id.file_name);
-            fileContentView = (WebView) v.findViewById(R.id.file_content);
+            fileNameView = v.findViewById(R.id.detail_file_name);
+            v.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            int layoutPosition = getLayoutPosition();
+            try {
+                JSONObject file = programContents.getJSONObject(layoutPosition);
+                String fileName = file.getString("name");
+                String fileContent = fileContents.get(fileName);
+                onClickCallback.accept(fileName, fileContent);
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
+    public interface BiConsumer<T, U> {
+        void accept(T t, U u);
     }
 
 }

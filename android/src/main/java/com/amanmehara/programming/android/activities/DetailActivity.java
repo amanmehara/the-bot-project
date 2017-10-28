@@ -130,6 +130,15 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
+    private DetailAdapter.BiConsumer<String, String> getOnClickCallback() {
+        return (fileName, fileContent) -> {
+            Map<String, Serializable> extrasMap = new HashMap<>();
+            extrasMap.put("fileName", fileName);
+            extrasMap.put("fileContent", fileContent);
+            startActivity(FileActivity.class, bundle, extrasMap);
+        };
+    }
+
     private GithubAPIClient.Consumer<String> getProgramResponseCallback(String url, boolean cacheHit) {
         return response -> {
             try {
@@ -157,14 +166,15 @@ public class DetailActivity extends BaseActivity {
                 this,
                 languageName,
                 programContents,
-                sharedPreferences
+                sharedPreferences,
+                getOnClickCallback()
         );
         recyclerView.setItemViewCacheSize(programContents.length());
         recyclerView.setAdapter(detailAdapter);
     }
 
     private void setProgramName(int id, JSONObject program) {
-        TextView name = (TextView) findViewById(id);
+        TextView name = findViewById(id);
         try {
             name.setText(program.getString("name"));
         } catch (JSONException e) {

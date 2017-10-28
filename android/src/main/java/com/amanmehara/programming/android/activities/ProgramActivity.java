@@ -55,7 +55,7 @@ public class ProgramActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_programs);
+        setContentView(R.layout.activity_program);
         setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
@@ -144,9 +144,9 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private void setLanguageDatails() {
-        TextView name = (TextView) findViewById(R.id.language_name);
+        TextView name = findViewById(R.id.language_name);
         name.setText(languageName);
-        ImageView image = (ImageView) findViewById(R.id.language_image);
+        ImageView image = findViewById(R.id.language_image);
         if (logoBlob != null) {
             int imageBlobLength = logoBlob.length;
             Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);

@@ -80,7 +80,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
 
         private ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.programs_name);
+            mTextView = v.findViewById(R.id.programs_name);
             v.setOnClickListener(this);
         }
 

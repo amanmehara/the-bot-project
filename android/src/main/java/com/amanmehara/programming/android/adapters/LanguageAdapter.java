@@ -203,9 +203,9 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         private ViewHolder(View v) {
             super(v);
-            languageNameView = (TextView) v.findViewById(R.id.language_name);
-            languageImageView = (ImageView) v.findViewById(R.id.language_image);
-            languageCountView = (TextView) v.findViewById(R.id.language_count);
+            languageNameView = v.findViewById(R.id.language_name);
+            languageImageView = v.findViewById(R.id.language_image);
+            languageCountView = v.findViewById(R.id.language_count);
             v.setOnClickListener(this);
         }
 
