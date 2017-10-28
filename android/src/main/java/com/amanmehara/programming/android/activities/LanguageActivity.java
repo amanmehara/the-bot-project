@@ -59,7 +59,7 @@ public class LanguageActivity extends BaseActivity {
         sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_language);
-        setActionBar(R.id.toolbar, true);
+        setActionBar(R.id.toolbar, true, "Languages {programming}");
         recyclerView = setRecyclerView(R.id.language_recycler_view);
 
         bundle = getIntent().getExtras();

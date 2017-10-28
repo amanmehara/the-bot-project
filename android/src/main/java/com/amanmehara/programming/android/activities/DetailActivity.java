@@ -58,13 +58,16 @@ public class DetailActivity extends BaseActivity {
         sharedPreferences = getSharedPreferences("Programming", MODE_PRIVATE);
 
         setContentView(R.layout.activity_detail);
-        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
         bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
         String programJson = bundle.getString("program");
+
+        String title = String.format("%s {programming}", languageName);
+
+        setActionBar(R.id.toolbar, true, title);
 
         try {
             if (isConnected()) {

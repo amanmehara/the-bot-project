@@ -43,11 +43,15 @@ public class FileActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_file);
-        setActionBar(R.id.toolbar, true);
 
         bundle = getIntent().getExtras();
         String fileName = bundle.getString("fileName");
         String fileContent = bundle.getString("fileContent");
+        String languageName = bundle.getString("languageName");
+
+        String title = String.format("%s {programming}", languageName);
+
+        setActionBar(R.id.toolbar, true, title);
 
         TextView fileNameView = findViewById(R.id.file_name);
         fileNameView.setText(fileName);

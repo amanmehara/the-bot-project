@@ -54,13 +54,16 @@ public class ProgramActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
-        setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
         bundle = getIntent().getExtras();
         languageName = bundle.getString("languageName");
-        String programsJson = bundle.getString("programs");
         byte[] logoBlob = bundle.getByteArray("logoBlob");
+        String programsJson = bundle.getString("programs");
+
+        String title = String.format("%s {programming}", languageName);
+
+        setActionBar(R.id.toolbar, true, title);
 
         setLanguageDatails(logoBlob);
 

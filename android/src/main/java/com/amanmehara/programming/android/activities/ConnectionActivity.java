@@ -42,7 +42,7 @@ public class ConnectionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
-        setActionBar(R.id.toolbar, true);
+        setActionBar(R.id.toolbar, true, "~INTERNET {~code}");
         bundle = getIntent().getExtras();
         activity = (Activity) bundle.getSerializable("enumeration.Activity");
     }

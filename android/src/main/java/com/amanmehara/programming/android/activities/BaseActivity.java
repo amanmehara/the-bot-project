@@ -36,6 +36,7 @@ import android.widget.Toolbar;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class BaseActivity extends Activity {
 
@@ -45,11 +46,12 @@ public abstract class BaseActivity extends Activity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    protected void setActionBar(int id, boolean showHomeAsUp) {
+    @SuppressWarnings("ConstantConditions")
+    protected void setActionBar(int id, boolean showHomeAsUp, String title) {
         setActionBar(findViewById(id));
         ActionBar actionBar = getActionBar();
-        //noinspection ConstantConditions
         actionBar.setDisplayHomeAsUpEnabled(showHomeAsUp);
+        actionBar.setTitle(title);
     }
 
     protected RecyclerView setRecyclerView(int id) {
