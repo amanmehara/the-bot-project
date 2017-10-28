@@ -74,21 +74,15 @@ public class ConnectionActivity extends BaseActivity {
     public void tryAgain(View view) {
 
         if (isConnected()) {
-            Map<String, Serializable> extrasMap = new HashMap<>();
             switch (activity) {
                 case DETAIL:
-                    extrasMap.put("accessToken", bundle.getString("accessToken"));
-                    extrasMap.put("languageName", bundle.getString("languageName"));
-                    extrasMap.put("programs", bundle.getString("programs"));
-                    extrasMap.put("program", bundle.getString("program"));
-                    startActivity(DetailActivity.class, extrasMap);
+                    startActivity(DetailActivity.class, bundle);
                     break;
                 case GITHUB:
                     startActivity(GithubOAuthActivity.class);
                     break;
                 case LANGUAGE:
-                    extrasMap.put("accessToken", bundle.getString("accessToken"));
-                    startActivity(LanguageActivity.class, extrasMap);
+                    startActivity(LanguageActivity.class, bundle);
                     break;
                 default:
             }
@@ -97,11 +91,7 @@ public class ConnectionActivity extends BaseActivity {
             switch (activity) {
                 case DETAIL:
                     extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                    extrasMap.put("accessToken", bundle.getString("accessToken"));
-                    extrasMap.put("languageName", bundle.getString("languageName"));
-                    extrasMap.put("programs", bundle.getString("programs"));
-                    extrasMap.put("program", bundle.getString("program"));
-                    startActivity(ConnectionActivity.class, extrasMap);
+                    startActivity(ConnectionActivity.class, bundle, extrasMap);
                     break;
                 case GITHUB:
                     extrasMap.put("enumeration.Activity", Activity.GITHUB);
@@ -109,8 +99,7 @@ public class ConnectionActivity extends BaseActivity {
                     break;
                 case LANGUAGE:
                     extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
-                    extrasMap.put("accessToken", bundle.getString("accessToken"));
-                    startActivity(ConnectionActivity.class, extrasMap);
+                    startActivity(ConnectionActivity.class, bundle, extrasMap);
                     break;
                 default:
             }

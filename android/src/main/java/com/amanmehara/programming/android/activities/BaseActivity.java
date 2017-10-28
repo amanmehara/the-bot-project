@@ -65,9 +65,7 @@ public abstract class BaseActivity extends Activity {
     }
 
     protected void startActivity(Class<? extends BaseActivity> clazz, Bundle bundle) {
-        Intent intent = new Intent(this, clazz);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        startActivity(clazz, bundle, Collections.emptyMap());
     }
 
     protected void startActivity(Class<? extends BaseActivity> clazz, Map<String, Serializable> extrasMap) {

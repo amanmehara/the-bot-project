@@ -46,10 +46,8 @@ import java.util.Map;
 public class ProgramActivity extends BaseActivity {
 
     private static final String TAG = ProgramActivity.class.getSimpleName();
-    private String accessToken;
+    private Bundle bundle;
     private String languageName;
-    private String programsJson;
-    private byte[] logoBlob;
     private RecyclerView recyclerView;
 
     @Override
@@ -59,13 +57,12 @@ public class ProgramActivity extends BaseActivity {
         setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.programs_recycler_view);
 
-        Bundle bundle = getIntent().getExtras();
-        accessToken = bundle.getString("accessToken");
+        bundle = getIntent().getExtras();
         languageName = bundle.getString("languageName");
-        programsJson = bundle.getString("programs");
-        logoBlob = bundle.getByteArray("logoBlob");
+        String programsJson = bundle.getString("programs");
+        byte[] logoBlob = bundle.getByteArray("logoBlob");
 
-        setLanguageDatails();
+        setLanguageDatails(logoBlob);
 
         try {
             setAdapter(new JSONArray(programsJson));
@@ -92,9 +89,7 @@ public class ProgramActivity extends BaseActivity {
                 return true;
             }
             case android.R.id.home: {
-                Map<String, Serializable> extrasMap = new HashMap<>();
-                extrasMap.put("accessToken", accessToken);
-                startActivity(LanguageActivity.class, extrasMap);
+                startActivity(LanguageActivity.class, bundle);
                 return true;
             }
             default: {
@@ -125,12 +120,8 @@ public class ProgramActivity extends BaseActivity {
     private ProgramAdapter.Consumer<JSONObject> getOnClickCallback() {
         return program -> {
             Map<String, Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken", accessToken);
-            extrasMap.put("languageName", languageName);
-            extrasMap.put("programs", programsJson);
             extrasMap.put("program", program.toString());
-            extrasMap.put("logoBlob", logoBlob);
-            startActivity(DetailActivity.class, extrasMap);
+            startActivity(DetailActivity.class, bundle, extrasMap);
         };
     }
 
@@ -143,7 +134,7 @@ public class ProgramActivity extends BaseActivity {
         recyclerView.setAdapter(programAdapter);
     }
 
-    private void setLanguageDatails() {
+    private void setLanguageDatails(byte[] logoBlob) {
         TextView name = findViewById(R.id.language_name);
         name.setText(languageName);
         ImageView image = findViewById(R.id.language_image);

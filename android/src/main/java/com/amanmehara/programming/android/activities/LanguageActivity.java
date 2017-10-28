@@ -47,6 +47,7 @@ public class LanguageActivity extends BaseActivity {
 
     private static final String TAG = LanguageActivity.class.getSimpleName();
     private static final String LANGUAGES_PATH = "contents?ref=master";
+    private Bundle bundle;
     private SharedPreferences sharedPreferences;
     private String accessToken;
     private RecyclerView recyclerView;
@@ -61,7 +62,7 @@ public class LanguageActivity extends BaseActivity {
         setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.language_recycler_view);
 
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         String url = Constants.ENDPOINT + LANGUAGES_PATH;
 
@@ -77,8 +78,7 @@ public class LanguageActivity extends BaseActivity {
             setAdapter();
             Map<String, Serializable> extrasMap = new HashMap<>();
             extrasMap.put("enumeration.Activity", Activity.LANGUAGE);
-            extrasMap.put("accessToken", accessToken);
-            startActivity(ConnectionActivity.class, extrasMap);
+            startActivity(ConnectionActivity.class, bundle, extrasMap);
         }
     }
 
@@ -141,11 +141,10 @@ public class LanguageActivity extends BaseActivity {
     private LanguageAdapter.BiFunction<String, byte[], LanguageAdapter.Consumer<JSONArray>> getOnClickCallback() {
         return (languageName, logoBlob) -> (programs) -> {
             Map<String, Serializable> extrasMap = new HashMap<>();
-            extrasMap.put("accessToken", accessToken);
             extrasMap.put("languageName", languageName);
             extrasMap.put("programs", programs.toString());
             extrasMap.put("logoBlob", logoBlob);
-            startActivity(ProgramActivity.class, extrasMap);
+            startActivity(ProgramActivity.class, bundle, extrasMap);
         };
     }
 

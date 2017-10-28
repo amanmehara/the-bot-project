@@ -49,9 +49,6 @@ public class DetailActivity extends BaseActivity {
     private SharedPreferences sharedPreferences;
     private String accessToken;
     private String languageName;
-    private byte[] logoBlob;
-    private String programJson;
-    private String programsJson;
     private RecyclerView recyclerView;
 
     @Override
@@ -67,9 +64,7 @@ public class DetailActivity extends BaseActivity {
         bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
-        logoBlob = bundle.getByteArray("logoBlob");
-        programJson = bundle.getString("program");
-        programsJson = bundle.getString("programs");
+        String programJson = bundle.getString("program");
 
         try {
             if (isConnected()) {
@@ -88,11 +83,7 @@ public class DetailActivity extends BaseActivity {
                 setAdapter();
                 Map<String, Serializable> extrasMap = new HashMap<>();
                 extrasMap.put("enumeration.Activity", Activity.DETAIL);
-                extrasMap.put("languageName", languageName);
-                extrasMap.put("programs", programsJson);
-                extrasMap.put("program", programJson);
-                extrasMap.put("logoBlob", logoBlob);
-                startActivity(ConnectionActivity.class, extrasMap);
+                startActivity(ConnectionActivity.class, bundle, extrasMap);
             }
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage());
@@ -116,12 +107,7 @@ public class DetailActivity extends BaseActivity {
                 return true;
             }
             case android.R.id.home: {
-                Map<String, Serializable> extrasMap = new HashMap<>();
-                extrasMap.put("accessToken", accessToken);
-                extrasMap.put("languageName", languageName);
-                extrasMap.put("logoBlob", logoBlob);
-                extrasMap.put("programs", programsJson);
-                startActivity(ProgramActivity.class, extrasMap);
+                startActivity(ProgramActivity.class, bundle);
                 return true;
             }
             default: {
