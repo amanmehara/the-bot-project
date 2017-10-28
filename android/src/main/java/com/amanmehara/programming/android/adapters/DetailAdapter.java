@@ -81,6 +81,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
         WebSettings webSettings = viewHolder.fileContentView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setTextZoom(75);
 
         try {
 
