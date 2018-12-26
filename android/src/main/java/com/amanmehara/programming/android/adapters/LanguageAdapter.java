@@ -35,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.rest.GithubAPIClient;
 
 import org.json.JSONArray;
@@ -47,7 +46,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.DIRECTORY;
 import static com.amanmehara.programming.android.common.Type.FILE;
@@ -88,7 +86,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
             JSONObject language = languages.getJSONObject(i);
 
-            String languageName = mapLanguageName(language.getString("name"));
+            String languageName = language.getString("name");
             viewHolder.languageNameView.setText(languageName);
 
             String url = language.getString("url");
@@ -165,14 +163,6 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         };
     }
 
-    private String mapLanguageName(String name) {
-        return Stream.of(Language.values())
-                .filter(language -> language.name().matches(name.toUpperCase()))
-                .findAny()
-                .map(Language::getDisplay)
-                .orElse(name);
-    }
-
     private void setLanguageLogo(ViewHolder viewHolder, JSONArray programs, String languageName) {
         for (int i = 0; i < programs.length(); i++) {
             try {
@@ -217,7 +207,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
             int layoutPosition = getLayoutPosition();
             try {
                 JSONObject language = languages.getJSONObject(layoutPosition);
-                String languageName = mapLanguageName(language.getString("name"));
+                String languageName = language.getString("name");
                 String url = language.getString("url");
                 byte[] logoBlob = logos.get(languageName);
                 onClickCallback.apply(languageName, logoBlob).accept(new JSONArray(sharedPreferences.getString(url, null)));

@@ -36,7 +36,6 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.amanmehara.programming.android.R;
-import com.amanmehara.programming.android.common.Language;
 import com.amanmehara.programming.android.rest.GithubAPIClient;
 
 import org.json.JSONArray;
@@ -45,7 +44,6 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static com.amanmehara.programming.android.common.Type.FILE;
 
@@ -121,7 +119,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "<script src='file:///android_asset/prism.js'></script>"
                 + "<body style='margin:0px; padding:0px;'>"
                 + "<pre class='line-numbers'><code class='language-"
-                + reverseMapLanguageName(languageName)
+                + languageName
                 + "'>"
                 + Html.escapeHtml(content)
                 + "</code></pre>"
@@ -147,15 +145,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 }
             }
         };
-    }
-
-    private String reverseMapLanguageName(String name) {
-        return Stream.of(Language.values())
-                .filter(language -> language.getDisplay().matches(name))
-                .findAny()
-                .map(Enum::name)
-                .map(String::toLowerCase)
-                .orElse(name);
     }
 
     private String withAccessToken(String url) {
