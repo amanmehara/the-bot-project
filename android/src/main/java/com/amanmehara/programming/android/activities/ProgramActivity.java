@@ -142,14 +142,14 @@ public class ProgramActivity extends BaseActivity {
     }
 
     private void setAdapter(JSONArray programs) {
-        ProgramAdapter programAdapter = new ProgramAdapter(this, filterPrograms(programs), getOnClickCallback());
+        ProgramAdapter programAdapter = new ProgramAdapter(filterPrograms(programs), getOnClickCallback());
         recyclerView.setAdapter(programAdapter);
     }
 
     private void setLanguageDatails() {
-        TextView name = (TextView) findViewById(R.id.language_name);
+        TextView name = findViewById(R.id.language_name);
         name.setText(languageName);
-        ImageView image = (ImageView) findViewById(R.id.language_image);
+        ImageView image = findViewById(R.id.language_image);
         if (Objects.nonNull(logoBlob)) {
             int imageBlobLength = logoBlob.length;
             Bitmap logo = BitmapFactory.decodeByteArray(logoBlob, 0, imageBlobLength);

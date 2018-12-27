@@ -47,12 +47,10 @@ import java.util.function.Consumer;
 public class DetailActivity extends BaseActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
-    private Bundle bundle;
     private SharedPreferences sharedPreferences;
     private String accessToken;
     private String languageName;
     private byte[] logoBlob;
-    private String programJson;
     private String programsJson;
     private RecyclerView recyclerView;
 
@@ -66,17 +64,17 @@ public class DetailActivity extends BaseActivity {
         setActionBar(R.id.toolbar, true);
         recyclerView = setRecyclerView(R.id.files_recycler_view);
 
-        bundle = getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
         accessToken = bundle.getString("accessToken");
         languageName = bundle.getString("languageName");
         logoBlob = bundle.getByteArray("logoBlob");
-        programJson = bundle.getString("program");
+        String programJson = bundle.getString("program");
         programsJson = bundle.getString("programs");
 
         try {
             if (isConnected()) {
                 JSONObject program = new JSONObject(programJson);
-                setProgramName(R.id.program_name, program);
+                setProgramName(program);
                 String url = program.getString("url");
                 String response = sharedPreferences.getString(url, null);
                 if (Objects.nonNull(response)) {
@@ -165,8 +163,8 @@ public class DetailActivity extends BaseActivity {
         recyclerView.setAdapter(detailAdapter);
     }
 
-    private void setProgramName(int id, JSONObject program) {
-        TextView name = (TextView) findViewById(id);
+    private void setProgramName(JSONObject program) {
+        TextView name = findViewById(R.id.program_name);
         try {
             name.setText(program.getString("name"));
         } catch (JSONException e) {

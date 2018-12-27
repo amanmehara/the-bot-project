@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -53,7 +54,7 @@ import static com.amanmehara.programming.android.common.Type.FILE;
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
 
     private static final String TAG = LanguageAdapter.class.getSimpleName();
-    private static final Map<String,byte[]> logos = new ConcurrentHashMap<>();
+    private static final Map<String, byte[]> logos = new ConcurrentHashMap<>();
     private final String accessToken;
     private final Activity activity;
     private final JSONArray languages;
@@ -73,15 +74,16 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         this.onClickCallback = onClickCallback;
     }
 
+    @NonNull
     @Override
-    public LanguageAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public LanguageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.language_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(LanguageAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull LanguageAdapter.ViewHolder viewHolder, int i) {
         try {
 
             JSONObject language = languages.getJSONObject(i);
@@ -118,7 +120,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                 byte[] imageBlob = Base64.decode(icon.getString("content"), Base64.DEFAULT);
                 int imageBlobLength = imageBlob.length;
                 Bitmap logo = BitmapFactory.decodeByteArray(imageBlob, 0, imageBlobLength);
-                logos.put(languageName,imageBlob);
+                logos.put(languageName, imageBlob);
                 viewHolder.languageImageView.setImageBitmap(logo);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -196,9 +198,9 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         private ViewHolder(View v) {
             super(v);
-            languageNameView = (TextView) v.findViewById(R.id.language_name);
-            languageImageView = (ImageView) v.findViewById(R.id.language_image);
-            languageCountView = (TextView) v.findViewById(R.id.language_count);
+            languageNameView = v.findViewById(R.id.language_name);
+            languageImageView = v.findViewById(R.id.language_image);
+            languageCountView = v.findViewById(R.id.language_count);
             v.setOnClickListener(this);
         }
 

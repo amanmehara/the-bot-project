@@ -49,7 +49,7 @@ public class GithubOAuthClient extends AsyncTask<String, Integer, String> {
 
     public GithubOAuthClient(Activity activity, Consumer<String> callback) {
         this.callback = callback;
-        this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar);
+        this.progressBar = activity.findViewById(R.id.progressbar);
     }
 
     @Override

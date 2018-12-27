@@ -24,6 +24,7 @@ package com.amanmehara.programming.android.adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Base64;
@@ -70,8 +71,9 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         this.sharedPreferences = sharedPreferences;
     }
 
+    @NonNull
     @Override
-    public DetailAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public DetailAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.files_list, viewGroup, false);
         return new ViewHolder(view);
@@ -79,7 +81,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
         WebSettings webSettings = viewHolder.fileContentView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -160,8 +162,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
 
         private ViewHolder(View v) {
             super(v);
-            fileNameView = (TextView) v.findViewById(R.id.file_name);
-            fileContentView = (WebView) v.findViewById(R.id.file_content);
+            fileNameView = v.findViewById(R.id.file_name);
+            fileContentView = v.findViewById(R.id.file_content);
         }
     }
 

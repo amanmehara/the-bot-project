@@ -21,7 +21,7 @@
 
 package com.amanmehara.programming.android.adapters;
 
-import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,29 +40,27 @@ import java.util.function.Consumer;
 public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHolder> {
 
     private static final String TAG = ProgramAdapter.class.getSimpleName();
-    private final Activity activity;
     private final JSONArray programs;
     private final Consumer<JSONObject> onClickCallback;
 
     public ProgramAdapter(
-            Activity activity,
             JSONArray programs,
             Consumer<JSONObject> onClickCallback
     ) {
-        this.activity = activity;
         this.programs = programs;
         this.onClickCallback = onClickCallback;
     }
 
+    @NonNull
     @Override
-    public ProgramAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ProgramAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.programs_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ProgramAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ProgramAdapter.ViewHolder viewHolder, int i) {
         try {
             viewHolder.mTextView.setText(programs.getJSONObject(i).getString("name"));
         } catch (JSONException e) {
@@ -82,7 +80,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.ViewHold
 
         private ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.programs_name);
+            mTextView = v.findViewById(R.id.programs_name);
             v.setOnClickListener(this);
         }
 

@@ -41,7 +41,6 @@ import java.util.function.Consumer;
 
 public class GithubOAuthActivity extends BaseActivity {
 
-    private static final String TAG = GithubOAuthActivity.class.getSimpleName();
     private static final String CLIENT_ID = "##";
     private static final String CLIENT_SECRET = "##";
     private static final String REDIRECT_URI = "##";
@@ -52,7 +51,7 @@ public class GithubOAuthActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_githuboauth);
-        webView = (WebView) findViewById(R.id.authentication);
+        webView = findViewById(R.id.authentication);
         webView.getSettings().setJavaScriptEnabled(true);
 
         if (isConnected()) {
@@ -74,7 +73,6 @@ public class GithubOAuthActivity extends BaseActivity {
                 Uri uri = request.getUrl();
                 if (uri.toString().startsWith(REDIRECT_URI)) {
                     String code = uri.getQueryParameter("code");
-                    String state = uri.getQueryParameter("state");
                     String urlEncodedFormData = String.format("client_id=%s&client_secret=%s&code=%s", CLIENT_ID, CLIENT_SECRET, code);
                     new GithubOAuthClient(activity, getResponseCallback()).execute(urlEncodedFormData);
                 }
