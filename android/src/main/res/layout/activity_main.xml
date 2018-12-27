@@ -123,18 +123,12 @@
                     android:orientation="horizontal"
                     android:padding="16sp">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_keyboard_arrow_right_white_36dp" />
-
                     <TextView
                         android:id="@+id/getStartedButton"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="Get Started!"
+                        android:text="> Get Started!"
                         android:textColor="@color/icons"
                         android:textSize="24sp"
                         android:fontFamily="@font/fira_sans_semibold" />
