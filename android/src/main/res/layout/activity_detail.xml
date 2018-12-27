@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,15 +16,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="vertical">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            card_view:cardCornerRadius="6dp"
-            card_view:cardElevation="4dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/program_name"
@@ -33,7 +28,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textColor="@color/primary_text"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:fontFamily="@font/fira_sans" />
 
         </android.support.v7.widget.CardView>
 
