@@ -86,6 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Most commonly used code snippets &amp; important algorithms in different programming languages are provided in a comprehensive way."
+                        android:textColor="@color/primary_text"
                         android:fontFamily="@font/fira_sans_light" />
 
                     <TextView
@@ -102,6 +103,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="8sp"
                         android:text="* Internet connection &amp; GitHub credentials are required."
+                        android:textColor="@color/primary_text"
                         android:fontFamily="@font/fira_sans_light" />
 
                 </LinearLayout>
