@@ -121,8 +121,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
                 + "<link href='https://fonts.googleapis.com/css?family=Fira+Mono' rel='stylesheet'>"
                 + "<link href='file:///android_asset/prism.css' rel='stylesheet'/>"
                 + "<script src='file:///android_asset/prism.js'></script>"
-                + "<body style='margin:0px; padding:0px;'>"
-                + "<pre class='line-numbers'><code class='language-"
+                + "<body style='background:#212121; margin:0px; padding:0px;'>"
+                + "<pre><code class='language-"
                 + languageName
                 + "'>"
                 + Html.escapeHtml(content)
