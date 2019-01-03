@@ -153,8 +153,6 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
                     sharedPreferences.edit().putString(url, response).apply();
                 }
                 JSONArray programs = new JSONArray(response);
-                Integer programCount = getProgramCount(programs);
-                viewHolder.languageCountView.setText(String.valueOf(programCount));
                 setLanguageLogo(viewHolder, programs, languageName);
             } catch (JSONException e) {
                 Log.e(TAG, e.getMessage());
@@ -194,13 +192,11 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         private TextView languageNameView;
         private ImageView languageImageView;
-        private TextView languageCountView;
 
         private ViewHolder(View v) {
             super(v);
             languageNameView = v.findViewById(R.id.language_name);
             languageImageView = v.findViewById(R.id.language_image);
-            languageCountView = v.findViewById(R.id.language_count);
             v.setOnClickListener(this);
         }
 
