@@ -155,7 +155,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         return url + "&access_token=" + accessToken;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView fileNameView;
         private WebView fileContentView;
@@ -164,6 +164,20 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
             super(v);
             fileNameView = v.findViewById(R.id.file_name);
             fileContentView = v.findViewById(R.id.file_content);
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (fileContentView.getVisibility()) {
+                case View.GONE:
+                    fileContentView.setVisibility(View.VISIBLE);
+                    break;
+                case View.INVISIBLE:
+                case View.VISIBLE:
+                    fileContentView.setVisibility(View.GONE);
+                    break;
+            }
         }
     }
 
